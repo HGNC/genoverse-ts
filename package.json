@@ -1,0 +1,32 @@
+{
+  "name": "genoverse",
+  "version": "1.0.0",
+  "description": "HGNC fork of https://github.com/wtsi-web/Genoverse",
+  "main": "dist/js/genoverse-hgnc.min.js",
+  "scripts": {
+    "build": "gulp build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/hgnc/genoverse.git"
+  },
+  "keywords": [
+    "bioinformatics",
+    "genome-browser"
+  ],
+  "author": "Kristian Gray",
+  "contributors": [
+    "Simon Brent",
+    "Evgeny Bragin"
+  ],
+  "license": "WTFPL",
+  "homepage": "https://bitbucket.org/hgnc/genoverse#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-clean": "^0.3.2",
+    "gulp-concat": "^2.6.1",
+    "gulp-uglify": "^3.0.0",
+    "run-sequence": "^2.0.0",
+    "streamqueue": "^1.1.1"
+  }
+}
