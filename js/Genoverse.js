@@ -1556,3 +1556,4 @@ $(function () {
 });
 
 window.Genoverse = Genoverse;
+export Genoverse;
