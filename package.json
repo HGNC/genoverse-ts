@@ -1,6 +1,6 @@
 {
   "name": "genoverse-hgnc",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "HGNC fork of https://github.com/wtsi-web/Genoverse",
   "main": "dist/js/genoverse-hgnc.min.js",
   "scripts": {
