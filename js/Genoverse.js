@@ -1521,7 +1521,7 @@ var Genoverse = Base.extend({
 
   getTrackNamespace: function (track) {
     var trackTypes = Genoverse.getAllTrackTypes();
-    var namespaces = $.map(trackTypes, function (constructor, name) { return track === constructor || track.prototype instanceof constructor ? name : null }); // Find all namespaces which this track could be
+    var namespaces = $.map(trackTypes, function (constructor, name) { return track === constructor || track.prototype instanceof constructor ? name : null; }); // Find all namespaces which this track could be
     var j          = namespaces.length;
     var i;
 
@@ -1555,4 +1555,6 @@ $(function () {
   }
 });
 
-window.Genoverse = Genoverse;
+//window.Genoverse = Genoverse;
+module.exports = Genoverse;
+exports.Genoverse = Genoverse;
