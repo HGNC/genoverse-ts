@@ -1,11 +1,20 @@
-Genoverse.Track.View.SequenceVariation = Genoverse.Track.View.Sequence.extend({
-  featureHeight : 15,
-  featureMargin : { top: 0, right: 0, bottom: 4, left: 0 },
-  bump          : true,
-  showLegend    : false,
+import SequenceView from '../sequence';
 
-  positionFeature: function (feature, params) {
-    var position = feature.position[params.scale];
+enum Bump {False, True, Label}
+
+export default class VariationView extends SequenceView {
+  
+  featureHeight = 15;
+  featureMargin = { top: 0, right: 0, bottom: 4, left: 0 };
+  bump          = Bump.True;
+  showLegend    = false;
+
+  decorateFeature(feature: any, featureContext: any, scale: any) {
+    throw new Error("Method not implemented.");
+  }
+  
+  positionFeature(feature: any, params: any) {
+    const position = feature.position[params.scale];
 
     if (feature.alt_allele) {
       if (!position.positioned) {
@@ -14,33 +23,32 @@ Genoverse.Track.View.SequenceVariation = Genoverse.Track.View.Sequence.extend({
 
       position.reference.x = position.reference.end - params.scaledStart;
     }
+    super.positionFeature(feature, params);
+  }
 
-    this.base(feature, params);
-  },
-
-  bumpFeature: function (bounds, feature) {
+  bumpFeature(bounds: any, feature: any) {
     if (feature.alt_allele) {
-      this.base.apply(this, arguments);
+      super.bumpFeature(bounds, feature);
     }
-  },
+  }
 
-  draw: function (features, featureContext, labelContext, scale) {
-    var drawing = { seq: [], snv: [] };
+  draw(features: any, featureContext: any, labelContext: any, scale: any) {
+    const drawing: {[key: string]: any[]} = { seq: [], snv: [] };
 
     for (var i = 0; i < features.length; i++) {
       drawing[features[i].alt_allele ? 'snv' : 'seq'].push(features[i]);
     }
 
-    this.base(drawing.seq, featureContext, labelContext, scale);
+    super.draw(drawing.seq, featureContext, labelContext, scale);
     this.highlightSNVs(drawing.snv, featureContext, scale);
-    this.base(drawing.snv, featureContext, labelContext, scale);
+    super.draw(drawing.snv, featureContext, labelContext, scale);
     this.outlineSNVs(drawing.snv, featureContext, scale); // Redraw the outline for SNVs, since the feature will have been drawn on top of some of the outline created by highlightSNVs
-  },
+  }
 
-  highlightSNVs: function (features, context, scale) {
-    var position, positionX, positionY;
+  highlightSNVs(features: any, context: any, scale: any) {
+    let position, positionX, positionY;
 
-    for (var i = 0; i < features.length; i++) {
+    for (let i = 0; i < features.length; i++) {
       position  = features[i].position[scale];
       positionX = [ position.X, position.reference.x, position.X + position.width ];
 
@@ -78,12 +86,12 @@ Genoverse.Track.View.SequenceVariation = Genoverse.Track.View.Sequence.extend({
 
       context.globalAlpha = 1;
     }
-  },
+  }
 
-  outlineSNVs: function (features, context, scale) {
-    var position, positionX, positionY;
+  outlineSNVs(features: any, context: any, scale: any) {
+    let position, positionX, positionY;
 
-    for (var i = 0; i < features.length; i++) {
+    for (let i = 0; i < features.length; i++) {
       position  = features[i].position[scale];
       positionX = [ position.X, position.X + position.width ];
       positionY = [ position.Y, position.Y + this.featureHeight ];
@@ -101,15 +109,16 @@ Genoverse.Track.View.SequenceVariation = Genoverse.Track.View.Sequence.extend({
 
       context.lineWidth = 1;
     }
-  },
+  }
 
-  truncateForDrawing: function (positionX) {
-    for (var i in positionX) {
+  truncateForDrawing(positionX: any) {
+    for (const i in positionX) {
       positionX[i] = Math.min(Math.max(positionX[i], -1), this.width + 1);
     }
-  },
+  }
 
-  setHighlightColor: function (feature) {
+  setHighlightColor(feature: any) {
     feature.highlightColor = feature.alt_allele === '-' || feature.alt_allele.length < feature.ref_allele.length ? '#D31D00' : '#1DD300';
   }
-});
+
+}

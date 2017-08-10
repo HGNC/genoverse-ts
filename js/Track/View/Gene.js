@@ -1,6 +1,10 @@
-Genoverse.Track.View.Gene = Genoverse.Track.View.extend({
-  featureHeight : 5,
-  labels        : true,
-  repeatLabels  : true,
-  bump          : true
-});
+import TrackView from '../view';
+
+enum Bump {False, True, Label}
+
+export default abstract class GeneView extends TrackView {
+  featureHeight = 5
+  labels        = 'default';
+  repeatLabels  = true;
+  bump          = Bump.True;
+}

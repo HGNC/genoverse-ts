@@ -1,7 +1,8 @@
-Genoverse.Track.Model.Stranded = Genoverse.Track.Model.extend({
-  init: function (reset) {
-    this.base(reset);
+import TrackModel from '../model';
 
+export default class StrandedModel extends TrackModel {
+  init(reset: any) {
+    super.init(reset);
     if (!reset) {
       var otherTrack = this.prop('forwardTrack');
 
@@ -11,18 +12,23 @@ Genoverse.Track.Model.Stranded = Genoverse.Track.Model.extend({
         this.featuresById  = otherTrack.prop('featuresById');
       }
     }
-  },
+  }
 
-  parseURL: function () {
+  parseURL() {
     if (!this.urlParams.strand) {
       this.urlParams.strand = this.prop('featureStrand');
     }
 
-    return this.base.apply(this, arguments);
-  },
-
-  findFeatures: function () {
-    var strand = this.track.featureStrand;
-    return $.grep(this.base.apply(this, arguments), function (feature) { return feature.strand === strand; });
+    return super.parseURL(arguments);
   }
-});
+
+  findFeatures() {
+    const strand = this.track.featureStrand;
+    return $.grep(
+      super.findFeatures(arguments),
+      function (feature: any) {
+        return feature.strand === strand;
+      }
+    );
+  }
+}

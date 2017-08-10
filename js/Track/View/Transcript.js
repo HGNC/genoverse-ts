@@ -1,24 +1,27 @@
-Genoverse.Track.View.Transcript = Genoverse.Track.View.extend({
-  featureHeight   : 10,
-  labels          : true,
-  repeatLabels    : true,
-  bump            : true,
-  intronStyle     : 'curve',
-  intronLineWidth : 0.5,
-  utrHeight       : 7,
+import TrackView from '../view';
 
-  drawFeature: function (transcript, featureContext, labelContext, scale) {
+enum Bump {False, True, Label}
+
+export default abstract class TranscriptView extends TrackView {
+  featureHeight   = 10;
+  labels          = 'default';
+  repeatLabels    = true;
+  bump            = Bump.True;
+  intronStyle     = 'curve';
+  intronLineWidth = 0.5;
+  utrHeight       = 7;
+
+  drawFeature(transcript: any, featureContext: any, labelContext: any, scale: number) {
     this.setFeatureColor(transcript);
 
-    var exons     = ($.isArray(transcript.exons) ? $.extend(true, [], transcript.exons) : $.map($.extend(true, {}, transcript.exons || {}), function (e) { return e; })).sort(function (a, b) { return a.start - b.start; });
-    var cds       = ($.isArray(transcript.cds)   ? $.extend(true, [], transcript.cds)   : $.map($.extend(true, {}, transcript.cds   || {}), function (c) { return c; })).sort(function (a, b) { return a.start - b.start; });
-    var add       = Math.max(scale, this.widthCorrection);
-    var coding    = {};
-    var cdsStart  = 9e99;
-    var cdsEnd    = -9e99;
-    var utrHeight = this.prop('utrHeight');
-    var utrOffset = (transcript.height - utrHeight) / 2;
-    var i, x, w;
+    const exons     = ($.isArray(transcript.exons) ? $.extend(true, [], transcript.exons) : $.map($.extend(true, {}, transcript.exons || {}), function (e) { return e; })).sort(function (a: any, b: any) { return a.start - b.start; });
+    const cds       = ($.isArray(transcript.cds)   ? $.extend(true, [], transcript.cds)   : $.map($.extend(true, {}, transcript.cds   || {}), function (c) { return c; })).sort(function (a: any, b: any) { return a.start - b.start; });
+    const add       = Math.max(scale, this.widthCorrection);
+    const coding: any = {};
+    let cdsStart  = 9e99;
+    let cdsEnd    = -9e99;
+    const utrHeight = this.prop('utrHeight');
+    const utrOffset = (transcript.height - utrHeight) / 2;
 
     // Get intron lines to be drawn off the left and right edges of the image
     if (!exons.length || exons[0].start > transcript.start) {
@@ -31,9 +34,9 @@ Genoverse.Track.View.Transcript = Genoverse.Track.View.extend({
 
     featureContext.fillStyle = featureContext.strokeStyle = transcript.color || this.color;
 
-    for (i = 0; i < cds.length; i++) {
-      x = transcript.x + (cds[i].start - transcript.start) * scale;
-      w = Math.max((cds[i].end - cds[i].start) * scale + add, this.minScaledWidth);
+    for (let i = 0; i < cds.length; i++) {
+      let x = transcript.x + (cds[i].start - transcript.start) * scale;
+      let w = Math.max((cds[i].end - cds[i].start) * scale + add, this.minScaledWidth);
 
       coding[cds[i].start + ':' + cds[i].end] = true;
 
@@ -47,11 +50,11 @@ Genoverse.Track.View.Transcript = Genoverse.Track.View.extend({
       featureContext.fillRect(x, transcript.y, w, transcript.height);
     }
 
-    for (i = 0; i < exons.length; i++) {
+    for (let i = 0; i < exons.length; i++) {
       // No need to draw the strokeRect if it is entirely inside a fillRect
       if (!coding[exons[i].start + ':' + exons[i].end]) {
-        x = transcript.x + (exons[i].start - transcript.start) * scale;
-        w = Math.max((exons[i].end - exons[i].start) * scale + add, this.minScaledWidth);
+        let x = transcript.x + (exons[i].start - transcript.start) * scale;
+        let w = Math.max((exons[i].end - exons[i].start) * scale + add, this.minScaledWidth);
 
         if (!(x > this.width || x + w < 0)) {
           featureContext.lineWidth = 1;
@@ -60,8 +63,8 @@ Genoverse.Track.View.Transcript = Genoverse.Track.View.extend({
       }
 
       if (i) {
-        x = transcript.x + (exons[i - 1].end - transcript.start) * scale + add;
-        w = (exons[i].start - exons[i - 1].end) * scale - add;
+        let x = transcript.x + (exons[i - 1].end - transcript.start) * scale + add;
+        let w = (exons[i].start - exons[i - 1].end) * scale - add;
 
         if (x > this.width || x + w < 0) {
           continue;
@@ -79,10 +82,10 @@ Genoverse.Track.View.Transcript = Genoverse.Track.View.extend({
     if (this.labels && transcript.label) {
       this.drawLabel(transcript, labelContext, scale);
     }
-  },
+  }
 
-  drawIntron: function (intron, context) {
-    var coords = this.getTruncatedIntronCoords(intron);
+  drawIntron(intron: any, context: any) {
+    const coords = this.getTruncatedIntronCoords(intron);
 
     if (!coords) {
       return;
@@ -108,26 +111,26 @@ Genoverse.Track.View.Transcript = Genoverse.Track.View.extend({
     }
 
     context.stroke();
-  },
+  }
 
-  getTruncatedIntronCoords: function (intron) {
-    var y1 = intron.y; // y coord of the ends of the line (half way down the exon box)
-    var y3 = y1;
+  getTruncatedIntronCoords(intron: any) {
+    let y1 = intron.y; // y coord of the ends of the line (half way down the exon box)
+    let y3 = y1;
 
     if (this.intronStyle === 'line') {
       this.truncateForDrawing(intron);
       y1 += 0.5; // Sharpen line
     }
 
-    var x1 = intron.x;                // x coord of the right edge of the first exon
-    var x3 = intron.x + intron.width; // x coord of the left edge of the second exon
+    let x1 = intron.x;                // x coord of the right edge of the first exon
+    let x3 = intron.x + intron.width; // x coord of the left edge of the second exon
 
     // Skip if completely outside the image's region
     if (x3 < 0 || x1 > this.width) {
       return false;
     }
 
-    var x2, y2, xMid, yScale;
+    let x2, y2, xMid, yScale;
 
     // Truncate the coordinates of the line being drawn, so it is inside the image's region
     if (this.intronStyle === 'hat') {
@@ -165,4 +168,4 @@ Genoverse.Track.View.Transcript = Genoverse.Track.View.extend({
       x3: x3, y3: y3
     };
   }
-});
+}

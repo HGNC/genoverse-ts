@@ -1,40 +1,38 @@
-// Abstract Sequence model
-// assumes that the data source responds with raw sequence text
-// see Fasta model for more specific example
-Genoverse.Track.Model.Sequence = Genoverse.Track.Model.extend({
-  threshold : 100000,
-  chunkSize : 1000,
-  buffer    : 0,
-  dataType  : 'text',
+import TrackModel from './../model';
 
-  setChrProps: function () {
-    var chr = this.browser.chr;
+export default abstract class SequenceModel extends TrackModel {
+  chunksByChr: {[key: string]: any};
+  threshold = 100000;
+  chunkSize = 1000;
+  buffer    = 0;
+  dataType  = 'text';
 
-    this.base();
-
+  setChrProps(): void {
+    const chr = this.browser.chr;
+    super.setChrProps();
     this.chunksByChr      = this.chunksByChr || {};
     this.chunksByChr[chr] = this.chunksByChr[chr] || {};
-  },
+  }
 
-  getData: function (chr, start, end) {
+  getData(chr: string, start: number, end: number): JQuery.Deferred<any, any, any> {
     start = start - start % this.chunkSize + 1;
     end   = end + this.chunkSize - end % this.chunkSize;
-    return this.base(chr, start, end);
-  },
+    return super.getData(chr, start, end);
+  }
 
-  parseData: function (data, chr, start, end) {
+  parseData(data: string, chr: string, start: number, end: number): void {
     data = data.replace(/\n/g, '');
 
     if (this.prop('lowerCase')) {
       data = data.toLowerCase();
     }
 
-    for (var i = 0; i < data.length; i += this.chunkSize) {
+    for (let i = 0; i < data.length; i += this.chunkSize) {
       if (this.chunksByChr[chr][start + i]) {
         continue;
       }
 
-      var feature = {
+      const feature = {
         id       : chr + ':' + start + i,
         chr      : chr,
         start    : start + i,
@@ -47,4 +45,4 @@ Genoverse.Track.Model.Sequence = Genoverse.Track.Model.extend({
       this.insertFeature(feature);
     }
   }
-});
+}

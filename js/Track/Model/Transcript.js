@@ -1,5 +1,4 @@
 // Abstract Transcript model
 // see sub-models for more specific examples
-Genoverse.Track.Model.Transcript = Genoverse.Track.Model.extend({
-
-});
+import TrackModel from '../model';
+export default abstract class TranscriptModel extends TrackModel {}

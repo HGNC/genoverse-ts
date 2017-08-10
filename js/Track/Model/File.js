@@ -1,7 +1,21 @@
-Genoverse.Track.Model.File = Genoverse.Track.Model.extend({
-  dataType: 'text',
+import TrackModel from '../model';
 
-  init: function () {
+interface FileReaderEventTarget extends EventTarget {
+    result:string
+}
+
+interface FileReaderEvent extends Event {
+    target: FileReaderEventTarget;
+    getMessage():string;
+}
+
+export default abstract class FileModel extends TrackModel {
+  dataFile: any;
+  largeFile: any;
+  isLocal: any;
+  dataType = 'text';
+
+  init() {
     if (this.isLocal) {
       this.url = false;
     }
@@ -10,17 +24,18 @@ Genoverse.Track.Model.File = Genoverse.Track.Model.extend({
       this.allData = true;
     }
 
-    this.base.apply(this, arguments);
-  },
+    super.init();
+  }
 
-  getData: function (chr) {
-    var model = this;
+  getData(...args: any[]) {
+    const chr: string = args[0];
+    const model = this;
 
     if (this.isLocal && this.dataFile) {
       var reader   = new FileReader();
       var deferred = $.Deferred();
 
-      reader.onload = function (e) {
+      reader.onload = function (e: FileReaderEvent) {
         deferred.done(function () {
           this.receiveData(e.target.result, chr, 1, this.browser.getChromosomeSize(chr));
         }).resolveWith(model);
@@ -30,7 +45,7 @@ Genoverse.Track.Model.File = Genoverse.Track.Model.extend({
 
       return deferred;
     } else {
-      return this.base.apply(this, arguments);
+      return super.getData(chr);
     }
   }
-});
+}

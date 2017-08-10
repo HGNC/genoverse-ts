@@ -1,19 +1,21 @@
-Genoverse.Track.Model.File.GFF = Genoverse.Track.Model.File.extend({
-  parseData: function (text, chr) {
-    var lines = text.split('\n');
+import FileModel from '../file';
 
-    for (var i = 0; i < lines.length; i++) {
+export class GFFModel extends FileModel {
+  parseData(text: string, chr: string) {
+    const lines = text.split('\n');
+
+    for (let i = 0; i < lines.length; i++) {
       if (!lines[i].length || lines[i].indexOf('#') === 0) {
         continue;
       }
 
-      var fields = lines[i].split('\t');
+      const fields = lines[i].split('\t');
 
       if (fields.length < 5) {
         continue;
       }
 
-      var seqId = fields[0].toLowerCase();
+      const seqId = fields[0].toLowerCase();
 
       if (
         seqId == chr                       ||
@@ -35,6 +37,6 @@ Genoverse.Track.Model.File.GFF = Genoverse.Track.Model.File.extend({
       }
     }
   }
-});
+}
 
-Genoverse.Track.Model.File.GTF = Genoverse.Track.Model.File.GFF;
+export class GTFModel extends GFFModel {}

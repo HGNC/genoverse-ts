@@ -25,11 +25,52 @@
   "license": "Apache-2.0",
   "homepage": "https://github.com/HGNC/genoverse-hgnc#readme",
   "devDependencies": {
+    "babelify": "^7.3.0",
+    "browser-sync": "^2.18.12",
+    "browserify": "^14.4.0",
+    "browserify-shim": "^3.8.14",
     "gulp": "^3.9.1",
     "gulp-clean": "^0.3.2",
     "gulp-concat": "^2.6.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-sourcemap": "^1.0.1",
+    "gulp-sourcemaps": "^2.6.0",
+    "gulp-typescript": "^3.2.1",
     "gulp-uglify": "^3.0.0",
+    "gulp-util": "^3.0.8",
+    "minifyify": "^7.3.5",
     "run-sequence": "^2.0.0",
-    "streamqueue": "^1.1.1"
+    "streamqueue": "^1.1.1",
+    "tsify": "^3.0.1",
+    "typescript": "^2.4.1",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.9.0"
+  },
+  "browser": {
+    "jquery": "./node_modules/jquery/dist/jquery.js",
+    "jquery-ui": "./node_modules/jquery-ui/dist/jquery-ui.js"
+  },
+  "browserify-shim": {
+    "jquery": "jQuery",
+    "jquery-ui": {
+      "depends": [
+        "jquery:jQuery"
+      ]
+    }
+  },
+  "browserify": {
+    "transform": [
+      "browserify-shim"
+    ]
+  },
+  "dependencies": {
+    "@types/jquery": "^3.2.9",
+    "@types/jqueryui": "^1.11.35",
+    "@types/rtree": "^1.4.27",
+    "bam": "git+https://github.com/KrisGray/bam.git",
+    "jquery": "^3.2.1",
+    "jquery-ui": "^1.12.1",
+    "rtree": "git+https://github.com/HGNC/RTree.git#release"
   }
 }

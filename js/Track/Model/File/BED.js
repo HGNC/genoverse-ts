@@ -1,17 +1,20 @@
-Genoverse.Track.Model.File.BED = Genoverse.Track.Model.File.extend({
-  parseData: function (text, chr) {
-    var lines = text.split('\n');
+import FileModel from '../file';
 
-    for (var i = 0; i < lines.length; i++) {
-      var fields = lines[i].split('\t');
+export default class BEDModel extends FileModel {
+  parseData(text: string, chr: string) {
+    const lines = text.split('\n');
+
+    for (let i = 0; i < lines.length; i++) {
+      const fields = lines[i].split('\t');
 
       if (fields.length < 3) {
         continue;
       }
 
       if (fields[0] == chr || fields[0].toLowerCase() == 'chr' + chr || fields[0].match('[^1-9]' + chr + '$')) {
-        var score = parseFloat(fields[4], 10);
-        var color = '#000000';
+        
+        const score = parseFloat(fields[4]);
+        let color = '#000000';
 
         if (fields[8]) {
           color = 'rgb(' + fields[8] + ')';
@@ -30,10 +33,9 @@ Genoverse.Track.Model.File.BED = Genoverse.Track.Model.File.extend({
         });
       }
     }
-  },
+  }
 
-  // As per https://genome.ucsc.edu/FAQ/FAQformat.html#format1 specification
-  scoreColor: function (score) {
+  scoreColor(score: number): string {
     if (score <= 166) { return 'rgb(219,219,219)'; }
     if (score <= 277) { return 'rgb(186,186,186)'; }
     if (score <= 388) { return 'rgb(154,154,154)'; }
@@ -44,4 +46,4 @@ Genoverse.Track.Model.File.BED = Genoverse.Track.Model.File.extend({
     if (score <= 944) { return 'rgb(21,21,21)';    }
     return '#000000';
   }
-});
+}

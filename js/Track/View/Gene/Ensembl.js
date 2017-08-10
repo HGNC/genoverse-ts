@@ -1,6 +1,13 @@
-Genoverse.Track.View.Gene.Ensembl = Genoverse.Track.View.Gene.extend({
-  setFeatureColor: function (feature) {
-    var processed_transcript = {
+import GeneView from '../gene';
+
+export default class EnsemblGeneView extends GeneView {
+  
+  decorateFeature(feature: any, featureContext: any, scale: any) {
+    throw new Error("Method not implemented.");
+  }
+
+  setFeatureColor(feature: any) {
+    const processed_transcript: any = {
       'sense_intronic'           : 1,
       'sense_overlapping'        : 1,
       'processed_transcript'     : 1,
@@ -42,4 +49,4 @@ Genoverse.Track.View.Gene.Ensembl = Genoverse.Track.View.Gene.extend({
 
     feature.labelColor = feature.color;
   }
-});
+}

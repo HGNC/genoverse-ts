@@ -1,30 +1,39 @@
-Genoverse.Track.File.BAM = Genoverse.Track.File.extend({
-  name      : 'BAM',
-  indexExt  : '.bai',
-  threshold : 100000,
-  largeFile : true,
-  model     : Genoverse.Track.Model.File.BAM,
-  view      : Genoverse.Track.View.Sequence.extend({
-    bump       : true,
-    autoHeight : true
-  }),
+import Genoverse from './../../../genoverse';
+import FileTrack from './../file';
+import BAMModel from './../../model/file/bam';
+import SequenceView from './../../view/sequence';
 
-  click: function () {
-    var menu = this.base.apply(this, arguments);
+export default class BAMTrack extends FileTrack {
+  name      = 'BAM';
+  indexExt  = '.bai';
+  threshold = 100000;
+  largeFile = true;
+  model: BAMModel;
+  view: SequenceView;
 
+  constructor(genoverse: Genoverse, config?: any){
+    super(genoverse, config);
+    this.view = new SequenceView(genoverse, {
+      bump       : true,
+      autoHeight : true
+    });
+    this.model = new BAMModel(genoverse, );
+  }
+  
+  click() {
+    const menu = this.base.apply(this, arguments);
+    
     if (menu) {
       menu.addClass('gv-wrap-values');
     }
 
     return menu;
-  },
+  }
 
-  populateMenu: function (feature) {
-    var f = $.extend({ title: feature.readName }, feature);
-
+  populateMenu(feature: any) {
+    const f = $.extend({ title: feature.readName }, feature);
     delete f.sequence;
     delete f.id;
-
-    return this.base(f);
+    return super.populateMenu(f);
   }
-});
+}
