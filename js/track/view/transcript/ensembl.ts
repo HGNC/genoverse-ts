@@ -2,11 +2,7 @@ import TranscriptView from '../transcript';
 
 export default class EnsemblTranscriptView extends TranscriptView {
   
-  decorateFeature(feature: any, featureContext: any, scale: any) {
-    throw new Error("Method not implemented.");
-  }
-  
-  setFeatureColor(feature: any) {
+  setFeatureColor(feature: { color: string; legend: string; labelColor: string; logic_name: string; biotype: string; }) {
     const processed_transcript: any = {
       'sense_intronic'           : 1,
       'sense_overlapping'        : 1,

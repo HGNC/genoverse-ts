@@ -17,26 +17,5 @@
   <body>
     <div id="genoverse"></div>
     <script type="text/javascript" src="bundle.js"></script>
-    <script type="text/javascript">
-      document.addEventListener('DOMContentLoaded', function() {
-        var genoverseConfig = {
-          container : '#genoverse',
-          width     : 800,
-          genome    : 'grch38',
-          chr       : 13,
-          start     : 32296945,
-          end       : 32370557,
-          useHash: false,
-          urlParamTemplate: false,
-          trackAutoHeight: true,  
-          plugins: ['controlPanel', 'karyotype'],
-          tracks: [
-              //Genoverse.Track.Scalebar,
-              //Genoverse.Track.Gene
-          ]
-        };
-        new Genoverse(genoverseConfig, 'main');
-      }, false);
-    </script>
   </body>
 </html>

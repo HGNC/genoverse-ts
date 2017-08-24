@@ -1,8 +1,15 @@
-import GeneModel from './../gene';
+import Genoverse from './../../genoverse';
+import TrackModel from './../model';
 
-export default class EnsemblModel extends GeneModel {
-  url              = '//rest.ensembl.org/overlap/region/human/__CHR__:__START__-__END__?feature=gene;content-type=application/json';
-  dataRequestLimit = 5000000; // As per e! REST API restrictions
+interface GeneModelPropeties {
+  url: string,
+  dataRequestLimit: number
+}
+
+export default abstract class GeneModel extends TrackModel {
+  constructor(genoverse: Genoverse, properties: GeneModelPropeties){
+    super(genoverse, properties);
+  }
 
   parseData(data: any[], chr: string): void {
     for (let i = 0; i < data.length; i++) {

@@ -41,9 +41,24 @@ export default class ChromosomeTrack extends TrackController {
     this.name = 'Chr ' + genoverse.chr;
     this.width = genoverse.width;
     this.featureMargin = { top: 0, right: 0, bottom: 0, left: 0 };
-    this.view = this.createView();
     this.setEvents();
     this.init();
+  }
+
+  init() {
+    this.setDefaults();
+    this.addDomElements();
+    this.addUserEventHandlers();
+    this.deferreds = []; // tracks deferreds so they can be stopped if the track is destroyed
+    
+    if (this.browser.scale) { // WHAT IS THIS!!!
+      this.setScale();
+      this.makeFirstImage();
+    }
+    this.view = this.createView();
+    if (this.legend) {
+      this.addLegend();
+    }
   }
 
   trackFactory(genoverse: Genoverse, properties: any) {
@@ -60,7 +75,7 @@ export default class ChromosomeTrack extends TrackController {
 
   createView(): ChromosomeView{
     const prop = {
-      defaultHeight: this.defaultHeight,
+      featureHeight: this.defaultHeight,
       margin: this.margin,
       resizable: this.resizable,
       height: this.height,

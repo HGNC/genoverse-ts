@@ -250,9 +250,7 @@ export default class TrackModel {
     if (!feature.id) {
       feature.id = feature.ID || this.hashCode(JSON.stringify($.extend({}, feature, { sort: '' }))); // sort is dependant on the browser's region, so will change on zoom
     }
-
     const features = this.features(feature.chr);
-
     if (features && !this.featuresById[feature.id]) {
       features.insert({ x: feature.start, y: 0, w: feature.end - feature.start + 1, h: 1 }, feature);
       this.featuresById[feature.id] = feature;
@@ -260,6 +258,7 @@ export default class TrackModel {
   }
 
   findFeatures(...args: any[]) {
+    
     var features = this.features(args[0]).search({ x: args[1] - this.dataBuffer.start, y: 0, w: args[2] - args[1] + this.dataBuffer.start + this.dataBuffer.end + 1, h: 1 });
     var filters  = this.featureFilters || [];
 
@@ -296,5 +295,12 @@ export default class TrackModel {
     }
 
     return '' + hash;
+  }
+
+  reset(): void{
+    delete this.dataRangesByChr;
+    delete this.featuresByChr;
+    this.featuresById = {};
+    this.setChrProps();
   }
 }

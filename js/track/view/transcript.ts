@@ -1,4 +1,5 @@
 import TrackView from '../view';
+import * as $ from 'jquery';
 
 enum Bump {False, True, Label}
 
@@ -11,6 +12,14 @@ export default abstract class TranscriptView extends TrackView {
   intronLineWidth = 0.5;
   utrHeight       = 7;
 
+  drawBackground(feature: any, canvasContext: CanvasRenderingContext2D, imgData: any): void {
+    $.noop;
+  }
+
+  decorateFeature(feature: any, featureContext: any, scale: any) {
+    $.noop;
+  }
+
   drawFeature(transcript: any, featureContext: any, labelContext: any, scale: number) {
     this.setFeatureColor(transcript);
 
@@ -20,7 +29,7 @@ export default abstract class TranscriptView extends TrackView {
     const coding: any = {};
     let cdsStart  = 9e99;
     let cdsEnd    = -9e99;
-    const utrHeight = this.prop('utrHeight');
+    const utrHeight = this.utrHeight;
     const utrOffset = (transcript.height - utrHeight) / 2;
 
     // Get intron lines to be drawn off the left and right edges of the image

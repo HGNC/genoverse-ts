@@ -34,9 +34,7 @@ export default abstract class TrackView {
   constructor(genoverse: Genoverse, properties?: any) {
     this.browser = genoverse;
     if(properties){
-      
       $.extend(this, properties);
-      
     }
     this.init();
   }
@@ -60,7 +58,8 @@ export default abstract class TrackView {
     }
 
     this.context       = (<HTMLCanvasElement>$('<canvas>')[0]).getContext('2d');
-    this.featureHeight = typeof this.featureHeight !== 'undefined' ? this.featureHeight : this.defaultHeight;
+    this.featureHeight = typeof this.featureHeight !== 'undefined' ? this.featureHeight : undefined;
+    if(! this.featureHeight) throw new Error("No height set");
     this.font          = this.fontWeight + ' ' + this.fontHeight + 'px ' + this.fontFamily;
     this.labelUnits    = [ 'bp', 'kb', 'Mb', 'Gb', 'Tb' ];
 
@@ -118,7 +117,6 @@ export default abstract class TrackView {
     for (let i = 0; i < features.length; i++) {
       this.positionFeature(features[i], params);
     }
-    
     params.width         = Math.ceil(params.width);
     params.height        = Math.ceil(params.height);
     params.featureHeight = Math.max(Math.ceil(params.featureHeight), this.resizable ? Math.max(this.height, this.minLabelHeight) : 0);
@@ -181,7 +179,6 @@ export default abstract class TrackView {
       }
       
       scaleSettings.featurePositions.insert(bounds, feature);
-
       feature.position[scale].bottom     = feature.position[scale].Y + bounds.h + params.margin;    
       feature.position[scale].positioned = true;
     }
@@ -198,7 +195,6 @@ export default abstract class TrackView {
 
       params.labelHeight = Math.max(params.labelHeight, feature.position[scale].label.bottom);
     }
-    
     params.featureHeight = Math.max(params.featureHeight, feature.position[scale].bottom);
     params.height        = Math.max(params.height, params.featureHeight + params.labelHeight);
   }
@@ -400,7 +396,7 @@ export default abstract class TrackView {
     feature.width       = Math.max(width, 0);
   }
 
-  formatLabel (label: any) {
+  formatLabel (label: any): string {
     const power = Math.floor((label.toString().length - 1) / 3);
     const unit  = this.labelUnits[power];
 

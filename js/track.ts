@@ -66,34 +66,16 @@ export default abstract class TrackController {
   messages: any;
 
   abstract setEvents(): void;
+  abstract createModel();
+  abstract createView();
+  abstract init(): void;
 
   constructor(genoverse: Genoverse, properties?: any) {
     this.browser = genoverse;
+    this.border = true;
     $.extend(this, properties);
-    //this.model = this.createModel();
-    //this.setDefaults();
-    //this.view = this.createView();
-    //this.setEvents();
   }
-
-  abstract createModel();
-  abstract createView();
-
-  init() {
-    this.setDefaults();
-    this.addDomElements();
-    this.addUserEventHandlers();
-    this.deferreds = []; // tracks deferreds so they can be stopped if the track is destroyed
-    if (this.browser.scale) { // WHAT IS THIS!!!
-      this.setScale();
-      this.makeFirstImage();
-    }
-
-    if (this.legend) {
-      this.addLegend();
-    }
-  }
-
+  
   setDefaults() {
     this.config = this.config || {};
     this.configSettings = this.configSettings || {};
@@ -300,6 +282,7 @@ export default abstract class TrackController {
   }
   */
   getSettingsForLength() {
+    console.log('I GET CALLED');
     const length = this.browser.length || (this.browser.end - this.browser.start + 1);
 
     for (let i = 0; i < this.lengthMap.length; i++) {
@@ -319,7 +302,6 @@ export default abstract class TrackController {
     }
 
     this.height = height;
-
     return height;
   }
 
@@ -420,7 +402,6 @@ export default abstract class TrackController {
   resetImageRanges() {
     this.left = 0;
     this.scrollStart = ['ss', this.browser.chr, this.browser.start, this.browser.end].join('-');
-
     this.imgRange[this.scrollStart] = this.imgRange[this.scrollStart] || { left: this.width * -2, right: this.width * 2 };
     this.scrollRange[this.scrollStart] = this.scrollRange[this.scrollStart] || { start: this.browser.start - this.browser.length, end: this.browser.end + this.browser.length };
   }
@@ -442,6 +423,8 @@ export default abstract class TrackController {
     const name = this.name || '';
     this.menus = $();
     this.container = $('<div class="gv-track-container">').appendTo(this.browser.wrapper);
+    const classTag = name || 'Scalebar';
+    this.container.addClass(`TRACK-${classTag}`);
     this.scrollContainer = $('<div class="gv-scroll-container">').appendTo(this.container);
 
     this.imgContainer = $('<div class="gv-image-container">').width(this.width).addClass(this.invert ? 'gv-invert' : '');
@@ -453,7 +436,7 @@ export default abstract class TrackController {
       $('<div class="gv-track-border">').appendTo(this.container);
     }
     if (this.unsortable) {
-      this.label.addClass('gv-unsortable').addClass('HELLO1');
+      this.label.addClass('gv-unsortable');
     } else {
       $('<div class="gv-handle">').appendTo(this.label);
     }
@@ -710,7 +693,6 @@ export default abstract class TrackController {
 
     if (this.imgRange[scrollStart] && this.imgRange[scrollStart].left + this.left > -this.scrollBuffer * this.width) {
       const end = this.scrollRange[scrollStart].start - 1;
-
       this.makeImage({
         scale: this.scale,
         chr: this.browser.chr,
@@ -726,7 +708,6 @@ export default abstract class TrackController {
 
     if (this.imgRange[scrollStart] && this.imgRange[scrollStart].right + this.left < this.scrollBuffer * this.width) {
       const start = this.scrollRange[scrollStart].end + 1;
-
       this.makeImage({
         scale: this.scale,
         chr: this.browser.chr,
@@ -754,21 +735,21 @@ export default abstract class TrackController {
     }
   }
 
-  makeImage(params: any) {
-    params.scaledStart = params.scaledStart || params.start * params.scale;
-    params.width = this.width;
-    params.height = this.height;
-    params.featureHeight = params.featureHeight || 0;
-    params.labelHeight = params.labelHeight || 0;
-    const myParams = $.extend(true,{},params);
+  makeImage(myParams: any) {
+
+    myParams.scaledStart = myParams.scaledStart || myParams.start * myParams.scale;
+    myParams.width = this.width;
+    myParams.margin = 1;
+    myParams.height = this.height;
+    myParams.featureHeight = myParams.featureHeight || 0;
+    myParams.labelHeight = myParams.labelHeight || 0;
     let deferred;
     const controller = this;
     const tooLarge = this.browser.length > this.threshold;
-    const div = this.imgContainer.clone().addClass((params.cls + ' gv-loading').replace('.', '_')).css({ left: myParams.left, display: myParams.cls === this.scrollStart ? 'block' : 'none' });
+    const div = this.imgContainer.clone().addClass((myParams.cls + ' gv-loading').replace('.', '_')).css({ left: myParams.left, display: myParams.cls === this.scrollStart ? 'block' : 'none' });
     
-    const bgImage = myParams.background ? $('<img class="gv-bg">').hide().addClass(myParams.background).data(myParams).prependTo(div) : false;
-    
-    const image = $('<img class="gv-data">').hide().data(myParams).appendTo(div).on('load', function () {
+    const bgImage = myParams.background ? $('<img class="gv-bg">').hide().addClass(myParams.background).prependTo(div) : false;
+    const image = $('<img class="gv-data">').hide().appendTo(div).on('load', function () {
       $(this).fadeIn('fast').parent().removeClass('gv-loading');
       $(this).siblings('.gv-bg').show();
     });
@@ -793,12 +774,13 @@ export default abstract class TrackController {
     }
 
     this.deferreds.push(deferred);
-
     return deferred.done(function () {
+      if (this.name && this.name === 'Genes') console.log(this.name);
       const features = tooLarge ? [] : controller.model.findFeatures(myParams.chr, myParams.start, myParams.end);
-      controller.render(features, image);
+      if (this.name && this.name === 'Genes') console.log('----------');
+      controller.render(features, image, myParams);
       if (bgImage) {
-        controller.renderBackground(features, bgImage);
+        controller.renderBackground(features, bgImage, myParams);
       }
       
     }).fail(function (e: any) {
@@ -828,7 +810,7 @@ export default abstract class TrackController {
 
     if (!this.browser.isStatic) {
       if (start > 1) {
-        images.push({ chr: chr, start: start - length, end: start - 1, scale: scale, cls: cls, left: -this.width });
+        images.push({ chr: chr, start: start - length, end: start - 1, scale: scale, cls: cls, left: -this.width});
         left = -this.width;
         width += this.width;
       }
@@ -841,7 +823,7 @@ export default abstract class TrackController {
 
     const loading = this.imgContainer.clone().addClass('gv-loading').css({ left: left, width: width }).prependTo(this.scrollContainer.css('left', 0));
 
-    function makeImages() {
+    const makeImages = () => {
       $.when.apply($, images.map(function (image) {
         return controller.makeImage(image);
       })).done(deferred.resolve);
@@ -854,7 +836,6 @@ export default abstract class TrackController {
       makeImages();
     } else {
       const buffer = this.model.dataBuffer;
-
       this.model.getData(chr, start - buffer.start - length, end + buffer.end + length).done(makeImages).fail(function (e) {
         controller.showError(e);
       });
@@ -863,9 +844,7 @@ export default abstract class TrackController {
     return deferred;
   }
 
-  render(features: any, img: any) {
-    const params = img.data();
-
+  render(features: any, img: any, params: any) {
     features = this.view.positionFeatures(this.view.scaleFeatures(features, params.scale), params); // positionFeatures alters params.featureHeight, so this must happen before the canvases are created
     let featureCanvas = $('<canvas>').attr({ width: params.width, height: params.featureHeight || 1 });
     let labelCanvas = this.labels === 'separate' && params.labelHeight ? featureCanvas.clone().attr('height', params.labelHeight) : featureCanvas;
@@ -892,9 +871,9 @@ export default abstract class TrackController {
     featureCanvas = labelCanvas = img = null;
   }
 
-  renderBackground(features: any, img: any, height?: number) {
+  renderBackground(features: any, img: any, params: any, height?: number) {
     let canvas: HTMLCanvasElement = <HTMLCanvasElement>$('<canvas>').attr({ width: this.width, height: height || 1 })[0];
-    this.view.drawBackground(features, canvas.getContext('2d'), img.data());
+    this.view.drawBackground(features, canvas.getContext('2d'), params);
     img.attr('src', canvas.toDataURL());
     canvas = img = null;
   }

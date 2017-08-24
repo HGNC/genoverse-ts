@@ -289,15 +289,13 @@ export default class Genoverse {
 
   init() { // USED
     const width = this.width;
-    
     this.addDomElements(width);
     this.addUserEventHandlers();
-    
     if (this.isStatic) {
       this.dragAction       = this.wheelAction = 'off';
       this.urlParamTemplate = '';
     }
-
+    
     this.tracksById       = {};
     this.prev             = {};
     this.legends          = {};
@@ -305,8 +303,6 @@ export default class Genoverse {
     this.urlParamTemplate = this.urlParamTemplate || '';
     this.useHash          = typeof this.useHash === 'boolean' ? this.useHash : typeof window.history.pushState !== 'function';
     this.textWidth        = document.createElement('canvas').getContext('2d').measureText('W').width;
-    this.labelWidth       = this.labelContainer.outerWidth(true);
-    this.width           -= this.labelWidth;
     this.paramRegex       = this.urlParamTemplate !== '' ? new RegExp('([?&;])' + this.urlParamTemplate
       .replace(/(\b(\w+=)?__CHR__(.)?)/,   '$2([\\w\\.]+)$3')
       .replace(/(\b(\w+=)?__START__(.)?)/, '$2(\\d+)$3')
@@ -476,12 +472,11 @@ export default class Genoverse {
         ui.helper.hide();
       }
     });
-
+    this.labelWidth       = this.labelContainer.outerWidth(true);
+    this.width           -= this.labelWidth;
     this.wrapper  = $('<div class="gv-wrapper">').appendTo(this.container);
     this.selector = $('<div class="gv-selector gv-crosshair">').appendTo(this.wrapper);
-
     this.selectorControls = this.zoomInHighlight = this.zoomOutHighlight = $();
-
     (<JQuery<HTMLElement>>this.container).addClass('gv-canvas-container').width(width);
     if (!this.isStatic) {
       this.selectorControls = $(
@@ -509,7 +504,6 @@ export default class Genoverse {
         '  </div>'                                            +
         '</div>'
       ).appendTo(this.selector);
-
       this.zoomInHighlight = $(
         '<div class="gv-canvas-zoom gv-i">' +
         '  <div class="gv-t gv-l gv-h"></div>' +
@@ -522,9 +516,10 @@ export default class Genoverse {
         '  <div class="gv-b gv-r gv-v"></div>' +
         '</div>'
       ).appendTo('body');
-
       this.zoomOutHighlight = this.zoomInHighlight.clone().toggleClass('gv-i gv-o').appendTo('body');
+      
     }
+
     if(! this.tracksLoaded && this.tracks){
       for(let i=0; i<this.tracks.length; i++){
         this.tracks[i] = new this.tracks[i](this);
@@ -1254,9 +1249,13 @@ export default class Genoverse {
     this.failed = true;
   }
 
-  makeMenu(features: any[], event: any, track: any) {
+  makeMenu(features: any, event: any, track: any) {
     if (!features) {
       return false;
+    }
+
+    if (!$.isArray(features)) {
+      features = [ features ];
     }
 
     if (features.length === 0) {

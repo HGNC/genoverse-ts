@@ -1,16 +1,14 @@
 // Ensembl REST API Transcript model
-import TranscriptModel from '../transcript';
+import Genoverse from './../../../genoverse';
+import TranscriptModel from './../transcript';
 
 export default class EnsemblTranscriptModel extends TranscriptModel {
-  seenGenes: number;
-  geneIds: any;
-  url = '//rest.ensembl.org/overlap/region/human/__CHR__:__START__-__END__?feature=transcript;feature=exon;feature=cds;content-type=application/json';
-  dataRequestLimit = 5000000; // As per e! REST API restrictions
-
-  setDefaults() {
-    this.geneIds   = {};
-    this.seenGenes = 0;
-    super.setDefaults();
+  
+  constructor(genoverse: Genoverse){
+    super(genoverse, {
+      url: '//rest.ensembl.org/overlap/region/human/__CHR__:__START__-__END__?feature=transcript;feature=exon;feature=cds;content-type=application/json',
+      dataRequestLimit: 5000000 // As per e! REST API restrictions
+    });
   }
 
   // The url above responds in json format, data is an array

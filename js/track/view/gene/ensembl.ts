@@ -1,12 +1,11 @@
-import GeneView from '../gene';
+import Genoverse from './../../../genoverse';
+import GeneView from './../gene';
+
+
 
 export default class EnsemblGeneView extends GeneView {
   
-  decorateFeature(feature: any, featureContext: any, scale: any) {
-    throw new Error("Method not implemented.");
-  }
-
-  setFeatureColor(feature: any) {
+  setFeatureColor(feature: { color: string; legend: string; labelColor: string; logic_name: string; biotype: string; }): void {
     const processed_transcript: any = {
       'sense_intronic'           : 1,
       'sense_overlapping'        : 1,
