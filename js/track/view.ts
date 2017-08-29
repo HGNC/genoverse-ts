@@ -72,7 +72,6 @@ export default abstract class TrackView {
 
   setScaleSettings(scale: any) {
     var chr = this.browser.chr;
-    
     if (!this.scaleSettings[chr]) {
       this.scaleSettings[chr] = {};
     }
@@ -114,6 +113,7 @@ export default abstract class TrackView {
 
   positionFeatures(features: any, params: any) {
     params.margin = this.margin;
+    
     for (let i = 0; i < features.length; i++) {
       this.positionFeature(features[i], params);
     }
@@ -121,7 +121,6 @@ export default abstract class TrackView {
     params.height        = Math.ceil(params.height);
     params.featureHeight = Math.max(Math.ceil(params.featureHeight), this.resizable ? Math.max(this.height, this.minLabelHeight) : 0);
     params.labelHeight   = Math.ceil(params.labelHeight);
-    
     
     return features;
   }
@@ -136,13 +135,13 @@ export default abstract class TrackView {
     
     feature.position[scale].X = feature.position[scale].start - params.scaledStart; // FIXME: always have to reposition for X, in case a feature appears in 2 images. Pass scaledStart around instead?
     if (this.alwaysReposition || !feature.position[scale].positioned) {
+      
       feature.position[scale].H = feature.position[scale].height + this.featureMargin.bottom;
       feature.position[scale].W = feature.position[scale].width  + (feature.marginRight || this.featureMargin.right);
       feature.position[scale].Y = (
         typeof feature.position[scale].y === 'number' ? feature.position[scale].y :
         typeof feature.y                 === 'number' ? feature.y * feature.position[scale].H : 0
       ) + (feature.marginTop || this.featureMargin.top);
-
       if (feature.label) {
         if (typeof feature.label === 'string') {
           feature.label = feature.label.split('\n');
@@ -153,7 +152,7 @@ export default abstract class TrackView {
         feature.labelHeight = feature.labelHeight || (this.fontHeight + 2) * feature.label.length;
         feature.labelWidth  = feature.labelWidth  || Math.max.apply(Math, $.map(feature.label, function (l) { return Math.ceil(context.measureText(l).width); })) + 1;
 
-        if (this.labels === true) {
+        if (this.labels === true || this.labels === 'default') {
           feature.position[scale].H += feature.labelHeight;
           feature.position[scale].W  = Math.max(feature.labelWidth, feature.position[scale].W);
         } else if (this.labels === 'separate' && !feature.position[scale].label) {
@@ -184,6 +183,7 @@ export default abstract class TrackView {
     }
 
     if (this.labels === 'separate' && feature.position[scale].label) {
+      
       if (this.alwaysReposition || !feature.position[scale].label.positioned) {
         this.bumpFeature(feature.position[scale].label, feature, scale, scaleSettings.labelPositions);
 
@@ -198,6 +198,10 @@ export default abstract class TrackView {
     params.featureHeight = Math.max(params.featureHeight, feature.position[scale].bottom);
     params.height        = Math.max(params.height, params.featureHeight + params.labelHeight);
   }
+
+
+
+
 
   // FIXME: should label bumping bounds be distinct from feature bumping bounds when label is smaller than feature?
   bumpFeature(bounds: any, feature: any, scale?: any, tree?: any) {
@@ -228,6 +232,11 @@ export default abstract class TrackView {
       feature.position[scale].Y = bounds.y;
     }
   }
+
+
+
+
+
 
   draw(features: any, featureContext: any, labelContext: any, scale: any) {
     let feature, f;

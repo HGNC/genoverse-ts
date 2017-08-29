@@ -2,7 +2,7 @@ import * as $ from 'jquery';
 import Genoverse from '../genoverse';
 import RTree from 'rtree';
 
-export default class TrackModel {
+export default abstract class TrackModel {
   browser: Genoverse;
   _url: any;
   dataBufferStart: any;

@@ -1,7 +1,8 @@
 import * as $ from 'jquery';
-import Genoverse from './genoverse';
-import TrackModel from './track/model';
-import TrackView from './track/view';
+import Genoverse from './../genoverse';
+import TrackModel from './model';
+import TrackView from './view';
+import LegendTrack from "./controller/static/legend";
 
 export default abstract class TrackController {
   repeatLabels: any;
@@ -13,6 +14,7 @@ export default abstract class TrackController {
   featureHeight: number;
   id: any;
   imgContainers: any;
+  featurePositions: any;
   labelPositions: any;
   legendType: any;
   name: string;
@@ -67,7 +69,7 @@ export default abstract class TrackController {
 
   abstract setEvents(): void;
   abstract createModel();
-  abstract createView();
+  abstract createView(properties?: Object);
   abstract init(): void;
 
   constructor(genoverse: Genoverse, properties?: any) {
@@ -144,155 +146,6 @@ export default abstract class TrackController {
   getConfig(type: string) {
     return this.configSettings[type][this.config[type]];
   }
-  /*
-  setLengthMap() {
-    const mv = ['model', 'view'];
-    let lengthMap: any = [];
-    const models: any = {};
-    const views: any = {};
-    let settings: any, value: any, deepCopy: any, prevLengthMap: any, mvSettings: any, type: any, prevType: any;
-
-    function compare(a: any, b: any) {
-      const checked: { [key: string]: boolean } = { browser: true, width: true, track: true }; // Properties set in newMVC should be ignored, as they will be missing if comparing an object with a prototype
-
-      for (var key in a) {
-        if (checked[key]) {
-          continue;
-        }
-
-        checked[key] = true;
-
-        if (typeof a[key] !== typeof b[key]) {
-          return false;
-        } else if (typeof a[key] === 'function' && typeof b[key] === 'function') {
-          if (a[key].toString() !== b[key].toString()) {
-            return false;
-          }
-        } else if (typeof a[key] === 'object' && !(a[key] instanceof $) && !compare(a[key], b[key])) {
-          return false;
-        } else if (a[key] !== b[key]) {
-          return false;
-        }
-      }
-
-      for (key in b) {
-        if (!checked[key]) {
-          return false;
-        }
-      }
-
-      return true;
-    }
-
-    // Find all scale-map like keys
-    for (let key in this) {
-      const numKey = parseInt(key, 10)
-      if (!isNaN(numKey)) {
-        value = (<any>this)[numKey];
-
-        lengthMap.push([key, value === false ? { threshold: numKey, resizable: 'auto', featureHeight: 0, model: TrackModel, view: TrackView } : $.extend(true, {}, value)]);
-      }
-    }
-
-    // Force at least one lengthMap entry to exist, containing the base model and view. lengthMap entries above -1 without a model or view will inherit from -1.
-    lengthMap.push([-1, { view: this.view || TrackView, model: this.model || TrackModel }]);
-
-    lengthMap = lengthMap.sort(function (a: any, b: any) { return b[0] - a[0]; });
-
-    for (let i = 0; i < lengthMap.length; i++) {
-      if (lengthMap[i][1].model && lengthMap[i][1].view) {
-        continue;
-      }
-
-      deepCopy = {};
-
-      if (lengthMap[i][0] !== -1) {
-        for (let j in lengthMap[i][1]) {
-          if ((<any>this._interface)[j]) {
-            deepCopy[(<any>this._interface)[j]] = true;
-          }
-
-          if (deepCopy.model && deepCopy.view) {
-            break;
-          }
-        }
-      }
-
-      // Ensure that every lengthMap entry has a model and view property, copying them from entries with smaller lengths if needed.
-      for (let j = i + 1; j < lengthMap.length; j++) {
-        if (!lengthMap[i][1].model && lengthMap[j][1].model) {
-          lengthMap[i][1].model = deepCopy.model ? TrackModel.extend($.extend(true, {}, lengthMap[j][1].model.prototype)) : lengthMap[j][1].model;
-        }
-
-        if (!lengthMap[i][1].view && lengthMap[j][1].view) {
-          lengthMap[i][1].view = deepCopy.view ? TrackView.extend($.extend(true, {}, lengthMap[j][1].view.prototype)) : lengthMap[j][1].view;
-        }
-
-        if (lengthMap[i][1].model && lengthMap[i][1].view) {
-          break;
-        }
-      }
-    }
-
-    // Now every lengthMap entry has a model and a view class, create instances of those classes.
-    for (let i = 0; i < lengthMap.length; i++) {
-      prevLengthMap = lengthMap[i - 1] ? lengthMap[i - 1][1] : {};
-      settings = $.extend(true, {}, this.constructor.prototype, lengthMap[i][1]);
-      mvSettings = { model: { prop: {}, func: {} }, view: { prop: {}, func: {} } };
-
-      // Work out which settings belong to models or views
-      for (let j in settings) {
-        if (j !== 'constructor' && mvSettings[(<any>this._interface)[j]]) {
-          mvSettings[(<any>this._interface)[j]][typeof settings[j] === 'function' ? 'func' : 'prop'][j] = settings[j];
-        }
-      }
-
-      // Create models and views, if settings.model or settings.view is a class rather than an instance
-      for (let j = 0; j < mv.length; j++) {
-        type = mv[j];
-
-        if (typeof settings[type] === 'function') {
-          prevType = (<any>this)[mv[j] + 's'];
-
-          // If the previous lengthMap contains an instance of the class in settings, it can be reused.
-          // This allows sharing of models and views between lengthMap entries if they are the same, stopping the need to fetch identical data or draw identical images more than once
-          if (prevLengthMap[type] instanceof settings[type]) {
-            settings[type] = prevLengthMap[type];
-          } else {
-            // Make an instance of the model/view, based on the settings[type] class but with a prototype that contains the functions in mvSettings[type].func
-            settings[type] = this.newMVC(settings[type], mvSettings[type].func, mvSettings[type].prop);
-
-            // If the track already has this.models/this.views and the prototype of the new model/view is the same as the value of this.models/this.views for the same length key, reuse that value.
-            // This can happen if the track has configSettings and the user changes config but that only affects one of the model and view.
-            // Again, reusing the old value stops the need to fetch identical data or draw identical images more than once.
-            if (prevType[lengthMap[i][0]] && compare(prevType[lengthMap[i][0]].constructor.prototype, $.extend({}, settings[type].constructor.prototype, mvSettings[type].prop))) {
-              settings[type] = prevType[lengthMap[i][0]];
-            }
-          }
-        }
-      }
-
-      models[lengthMap[i][0]] = lengthMap[i][1].model = settings.model;
-      views[lengthMap[i][0]] = lengthMap[i][1].view = settings.view;
-    }
-
-    this.lengthMap = lengthMap;
-    this.models = models;
-    this.views = views;
-  }
-  */
-  getSettingsForLength() {
-    console.log('I GET CALLED');
-    const length = this.browser.length || (this.browser.end - this.browser.start + 1);
-
-    for (let i = 0; i < this.lengthMap.length; i++) {
-      if (length > this.lengthMap[i][0] || length === 1 && this.lengthMap[i][0] === 1) {
-        return this.lengthMap[i];
-      }
-    }
-
-    return [];
-  }
 
   setHeight(height: number, forceShow: boolean) {
     if (this.disabled || (forceShow !== true && height < this.featureHeight) || (this.threshold) && !this.thresholdMessage && this.browser.length > this.threshold) {
@@ -310,6 +163,8 @@ export default abstract class TrackController {
     if (!this.legend) {
       return;
     }
+    console.log('HELLO');
+    const legend = new LegendTrack(this.browser);
     /*
     var track = this;
     var constructor = this.legend.prototype instanceof TrackLegend ? this.legend : TrackLegend;
@@ -583,7 +438,7 @@ export default abstract class TrackController {
   visibleFeatureHeight() {
     const bounds = { x: this.browser.scaledStart, w: this.width, y: 0, h: 9e99 };
     const scale = this.scale;
-    const features = this.view.scaleSettings.featurePositions.search(bounds);
+    const features = this.featurePositions.search(bounds);
     const minHeight = this.hideEmpty ? 0 : this.minLabelHeight;
     let height = Math.max.apply(Math, $.map(features, function (feature) { return feature.position[scale].bottom; }).concat(minHeight));
 
@@ -625,7 +480,7 @@ export default abstract class TrackController {
       return;
     }
 
-    const featureMargin = this.featureMargin;
+    const featureMargin = this.view.featureMargin;
     const height = this.height;
 
     // Note: fullVisibleHeight - featureMargin.top - featureMargin.bottom is not actually the correct value to test against, but it's the easiest best guess to obtain.
@@ -680,8 +535,10 @@ export default abstract class TrackController {
       this.thresholdMessage = this.view.formatLabel(this.threshold);
     }
     
-    $.each(this.view.setScaleSettings(this.scale), function (k, v) { (<any>controller)[k] = v; });
-
+    $.each(this.view.setScaleSettings(this.scale), function (k, v) {
+      (<any>controller)[k] = v;
+    });
+    
     this.hideMessage();
   }
 
@@ -775,9 +632,7 @@ export default abstract class TrackController {
 
     this.deferreds.push(deferred);
     return deferred.done(function () {
-      if (this.name && this.name === 'Genes') console.log(this.name);
       const features = tooLarge ? [] : controller.model.findFeatures(myParams.chr, myParams.start, myParams.end);
-      if (this.name && this.name === 'Genes') console.log('----------');
       controller.render(features, image, myParams);
       if (bgImage) {
         controller.renderBackground(features, bgImage, myParams);
@@ -788,7 +643,7 @@ export default abstract class TrackController {
     });
   }
 
-  makeFirstImage(moveTo?: any) {
+  makeFirstImage(moveTo?: any): JQuery.Deferred<any, any, any> {
     const deferred = $.Deferred();
     if (this.scrollContainer.children().hide().filter('.' + (moveTo || this.scrollStart)).show().length) {
       this.scrollContainer.css('left', 0);
@@ -845,7 +700,9 @@ export default abstract class TrackController {
   }
 
   render(features: any, img: any, params: any) {
+    
     features = this.view.positionFeatures(this.view.scaleFeatures(features, params.scale), params); // positionFeatures alters params.featureHeight, so this must happen before the canvases are created
+
     let featureCanvas = $('<canvas>').attr({ width: params.width, height: params.featureHeight || 1 });
     let labelCanvas = this.labels === 'separate' && params.labelHeight ? featureCanvas.clone().attr('height', params.labelHeight) : featureCanvas;
     const featureContext = (<HTMLCanvasElement>featureCanvas[0]).getContext('2d');
@@ -859,9 +716,11 @@ export default abstract class TrackController {
       default: labelContext.textAlign = 'left'; labelContext.textBaseline = 'top'; break;
     }
     
-    this.view.draw(features, featureContext, labelContext, params.scale);
-    img.attr('src', (<HTMLCanvasElement>featureCanvas[0]).toDataURL());
     
+    this.view.draw(features, featureContext, labelContext, params.scale);
+
+
+    img.attr('src', (<HTMLCanvasElement>featureCanvas[0]).toDataURL());
     if (labelContext !== featureContext) {
       img.clone(true).attr({ 'class': 'gv-labels', src: (<HTMLCanvasElement>labelCanvas[0]).toDataURL() }).insertAfter(img);
     }

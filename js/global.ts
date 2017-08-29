@@ -1,6 +1,6 @@
 import Genoverse from './genoverse';
-import ScalebarTrack from './track/library/scalebar';
-import EnsemblGeneTrack from './track/library/gene/ensembl';
+import ScalebarTrack from './track/controller/scalebar';
+import EnsemblGeneTrack from './track/controller/gene/ensembl';
 
 (<any>window).Genoverse = Genoverse;
 

@@ -1,7 +1,7 @@
 import Genoverse from './../../genoverse';
-import TrackController from './../../track';
+import TrackController from './../controller';
 import ScalebarView from './../view/scalebar';
-import TrackModel from './../model';
+import ScalebarModel from './../model/scalebar';
 import RTree from 'rtree';
 import * as $ from 'jquery';
 
@@ -75,7 +75,7 @@ export default class ScalebarTrack extends TrackController {
   }
 
   createModel() {
-    return new TrackModel(this.browser);
+    return new ScalebarModel(this.browser);
   }
 
   setEvents(): void {

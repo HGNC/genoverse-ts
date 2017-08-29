@@ -17,7 +17,40 @@ export default class EnsemblGeneTrack extends GeneTrack {
       height: 200,
       legend: true,
       labels: true,
-      margin: 2
+      margin: 2,
+      resizable: true,
+      lengthDependentMV: [
+        { // This one applies when > 2M base-pairs per screen
+          minLength: 2000000,
+          model: {
+            class: EnsemblGeneModel
+          },
+          view: {
+            class: EnsemblGeneView,
+            properties: {label: false}
+          }
+        },
+        { // more than 100K but less then 2M
+          minLength: 100000,
+          model: {
+            class: EnsemblGeneModel
+          },
+          view: {
+            class: EnsemblGeneView,
+            properties: {label: true}
+          }
+        },
+        { // > 1 base-pair, but less then 100K
+          minLength: 1,
+          model: {
+            class: EnsemblTranscriptModel
+          },
+          view: {
+            class: EnsemblTranscriptView,
+            properties: {label: true}
+          }
+        }
+      ]
     });
   }
 
@@ -38,24 +71,20 @@ export default class EnsemblGeneTrack extends GeneTrack {
     }
   }
 
-  createModel() {
-    return new EnsemblGeneModel(this.browser);
-  }
-
   createView() {
     const prop = {
       margin: this.margin,
       height: this.height,
       featureHeight: 5,
+      minLabelHeight: 29,
       width: this.width,
-      labels: 'default',
+      labels: true,
       repeatLabels: true,
-      bump: Bump.True
+      bump: Bump.True,
+      resizable: this.resizable
     };
-    return new EnsemblGeneView(this.browser, prop);
+    return super.createView(prop);
   }
-
-
 
   populateMenu(feature: any) {
     const url  = 'http://www.ensembl.org/Homo_sapiens/' + (feature.feature_type === 'transcript' ? 'Transcript' : 'Gene') + '/Summary?' + (feature.feature_type === 'transcript' ? 't' : 'g') + '=' + feature.id;
@@ -72,4 +101,5 @@ export default class EnsemblGeneTrack extends GeneTrack {
 
     return menu;
   }
+
 }

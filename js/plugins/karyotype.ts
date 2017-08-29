@@ -1,5 +1,5 @@
 import Genoverse from '../genoverse';
-import ChromosomeTrack from './../track/library/chromosome';
+import ChromosomeTrack from './../track/controller/chromosome';
 import * as $ from 'jquery';
 import './../lib/jquery-tipsy';
 

@@ -1,5 +1,5 @@
 import Genoverse from './../../genoverse';
-import TrackController from './../../track';
+import TrackController from './../controller';
 import ChromosomeModel from './../model/chromosome';
 import ChromosomeView from './../view/chromosome';
 import * as $ from 'jquery';

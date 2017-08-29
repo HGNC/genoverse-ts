@@ -1321,7 +1321,8 @@ export default class Genoverse {
       menu       = browser.menuTemplate.clone(true).data({ browser: browser, feature: feature });
       content    = $('.gv-menu-content', menu).remove();
       loading    = $('.gv-menu-loading', menu);
-      getMenu    = track ? track.controller.populateMenu(feature) : feature;
+      
+      getMenu    = track ? track.populateMenu(feature) : feature;
       isDeferred = typeof getMenu === 'object' && typeof getMenu.promise === 'function';
 
       if (isDeferred) {
