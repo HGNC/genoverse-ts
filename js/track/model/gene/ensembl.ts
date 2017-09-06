@@ -10,4 +10,9 @@ export default class EnsemblGeneModel extends GeneModel {
     });
   }
 
+  receiveData(data: any, chr: string, start: number, end: number){
+    super.receiveData(data, chr, start, end);
+    
+  }
+
 }

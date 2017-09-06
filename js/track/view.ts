@@ -71,13 +71,13 @@ export default abstract class TrackView {
   }
 
   setScaleSettings(scale: any) {
-    var chr = this.browser.chr;
+    const chr = this.browser.chr;
     if (!this.scaleSettings[chr]) {
       this.scaleSettings[chr] = {};
     }
     
     if (!this.scaleSettings[chr][scale]) {
-      var featurePositions = new RTree();
+      const featurePositions = new RTree();
 
       this.scaleSettings[chr][scale] = {
         imgContainers    : $(),

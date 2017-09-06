@@ -1,5 +1,5 @@
 import Genoverse from './../../../genoverse';
-import StaticTrack from "../static";
+import StaticTrack from "./../static";
 import LegendModel from "./../../model/static/legend";
 import LegendView from "./../../view/static/legend";
 import * as $ from 'jquery';
@@ -11,46 +11,26 @@ export default class LegendTrack extends StaticTrack {
   order: any;
   removable: boolean;
   lockToTrack: boolean;
-
-  constructor(genoverse: Genoverse, properties?: any) {
+  
+  constructor(genoverse: Genoverse, properties: any){
     super(genoverse, properties);
     this.unsortable = true;
     this.lockToTrack = true; // Always put the legend just below the last track that the legend is for
     this.removable = false;
+    this.init();
   }
-
-
+  
   init(): void {
     this.model = this.createModel();
-    
+    this.setEvents();
+    this.setDefaults();
+    this.addDomElements();
+    this.addUserEventHandlers();
+    this.deferreds = [];
     this.container.addClass('gv-track-container-legend');
-    
     this.browser.legends[this.id] = this;
-    
-    this.setTracks();
-    
     this.view = this.createView();
-    
-  }
-
-  createModel() {
-    return new LegendModel(this.browser);
-  }
-  
-  createView(properties?: Object) {
-    return new LegendView(this.browser, properties);
-  }
-
-  destroy() {
-    delete this.browser.legends[this.id];
-    super.destroy();
-  }
-  
-  setDefaults() {
-    this.order = typeof this.order !== 'undefined' ? this.order : 9e99;
-    this.id    = this.id   || 'legend';
-    this.type  = this.type || 'legend';
-    super.setDefaults();
+    this.setTracks();
   }
 
   setEvents() {
@@ -93,21 +73,21 @@ export default class LegendTrack extends StaticTrack {
 
     this.browser.on({
       afterPositionFeatures: function (features, params) {
-        const legend = this.prop('legendTrack');
+        const legend = this.legendTrack;
 
         if (legend) {
           setTimeout(function () { legend.controller.makeImage(params); }, 1);
         }
       },
       afterResize: function (height, userResize) {
-        const legend = this.prop('legendTrack');
+        const legend = this.legendTrack;
 
         if (legend && userResize === true) {
           legend.controller.makeImage({});
         }
       },
       afterCheckHeight: function () {
-        const legend = this.prop('legendTrack');
+        const legend = this.legendTrack;
 
         if (legend) {
           legend.controller.makeImage({});
@@ -115,7 +95,7 @@ export default class LegendTrack extends StaticTrack {
       },
 
       afterSetMVC: function () {
-        const legend = this.prop('legendTrack');
+        const legend = this.legendTrack;
 
         if (legend && legend.tracks.length) {
           legend.disable();
@@ -131,7 +111,6 @@ export default class LegendTrack extends StaticTrack {
   setTracks() {
     const legend = this;
     const type   = this.type;
-
     this.tracks = $.grep(this.browser.tracks, function (t) {
       if (t.legendType === type && !t.disabled) {
         t.legendTrack = t.legendTrack || legend;
@@ -140,21 +119,17 @@ export default class LegendTrack extends StaticTrack {
     });
 
     this.tracks = this.tracks.concat($.map(this.tracks, function (t) {
-      var linkedTrack = t.prop('subtrack') || t.prop('parentTrack');
-      return linkedTrack && linkedTrack.prop('disabled') !== true ? linkedTrack : null;
+      const linkedTrack = t.subtrack || t.parentTrack;
+      return linkedTrack && linkedTrack.disabled !== true ? linkedTrack : null;
     }));
 
     this.updateOrder();
-
-    if (typeof this.controller === 'object') {
-      this[this.tracks.length ? 'enable' : 'disable']();
-    } else {
-      this.disabled = !this.tracks.length;
-    }
+    this[this.tracks.length ? 'enable' : 'disable']();
+    
   }
 
   updateOrder() {
-    const tracks = this.tracks.filter(function (t) { return !t.prop('parentTrack'); });
+    const tracks = this.tracks.filter(function (t) { return !t.parentTrack; });
 
     if (tracks.length && this.lockToTrack) {
       this.order = tracks[tracks.length - 1].order + 0.1;
@@ -170,4 +145,31 @@ export default class LegendTrack extends StaticTrack {
     delete this.stringified;
     super.disable();
   }
+  
+  createModel() {
+    return new LegendModel(this.browser, {width: this.width});
+  }
+  
+  createView(properties?: Object) {
+    return new LegendView(this.browser, {
+      featureHeight: 20,
+      width: this.width,
+      margin: this.margin,
+    });
+  }
+
+  destroy() {
+    delete this.browser.legends[this.id];
+    super.destroy();
+  }
+  
+  setDefaults() {
+    this.order = typeof this.order !== 'undefined' ? this.order : 9e99;
+    this.id    = this.id   || 'legend';
+    this.type  = this.type || 'legend';
+    super.setDefaults();
+  }
+
+  
+
 }

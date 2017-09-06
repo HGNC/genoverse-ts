@@ -40,4 +40,9 @@ export default class EnsemblTranscriptModel extends TranscriptModel {
       }
     }
   }
+
+  receiveData(data: any, chr: string, start: number, end: number){
+    super.receiveData(data, chr, start, end);
+    
+  }
 }

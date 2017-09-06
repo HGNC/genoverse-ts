@@ -7,8 +7,8 @@ import karyotype from './plugins/karyotype';
 import tooltips from './plugins/tooltips';
 import trackControls from './plugins/trackControls';
 
-import GRCh37 from './genomes/grch37';
-import GRCh38 from './genomes/grch38';
+import GRCh37 from './interfaces/genomes/grch37';
+import GRCh38 from './interfaces/genomes/grch38';
 import controlPanel from './plugins/controlPanel';
 //fileDrop
 
@@ -17,8 +17,8 @@ import controlPanel from './plugins/controlPanel';
 //import TrackController from "./track/controller";
 //import TrackModel from "./track/model";
 //import Track from "./track";
-import Genome from "./genome";
-import { Chromosomes } from "./genome";
+import Genome from "./interfaces/genome";
+import { Chromosomes } from "./interfaces/genome";
 
 export default class Genoverse {
   type?: string;
@@ -116,7 +116,7 @@ export default class Genoverse {
         const data = $(this).data();
 
         if (data.track) {
-          data.track.prop('menus', data.track.prop('menus').not(this));
+          data.track.menus = data.track.menus.not(this);
         }
 
         data.browser.menus = data.browser.menus.not(this);
@@ -288,6 +288,9 @@ export default class Genoverse {
   }
 
   init() { // USED
+    this.tracksById       = {};
+    this.prev             = {};
+    this.legends          = {};
     const width = this.width;
     this.addDomElements(width);
     this.addUserEventHandlers();
@@ -296,9 +299,6 @@ export default class Genoverse {
       this.urlParamTemplate = '';
     }
     
-    this.tracksById       = {};
-    this.prev             = {};
-    this.legends          = {};
     this.saveKey          = this.saveKey ? 'genoverse-' + this.saveKey : 'genoverse';
     this.urlParamTemplate = this.urlParamTemplate || '';
     this.useHash          = typeof this.useHash === 'boolean' ? this.useHash : typeof window.history.pushState !== 'function';
@@ -308,7 +308,7 @@ export default class Genoverse {
       .replace(/(\b(\w+=)?__START__(.)?)/, '$2(\\d+)$3')
       .replace(/(\b(\w+=)?__END__(.)?)/,   '$2(\\d+)$3') + '([;&])'
     ) : new RegExp('');
-
+    
     const urlCoords = this.getURLCoords();
     const coords    = urlCoords.chr && urlCoords.start && urlCoords.end ? urlCoords : { chr: this.chr, start: this.start, end: this.end };
 
@@ -319,18 +319,12 @@ export default class Genoverse {
     }
 
     this.canChangeChr = !!this.genome;
-
-    if (this.saveable) {
-      this.loadConfig();
-    } else {
-      this.addTracks();
-    }
-
     this.setRange(coords.start, coords.end);
 
     if (this.highlights && this.highlights.length) {
       this.addHighlights(this.highlights);
     }
+    
   }
 
   loadConfig() { // USED
@@ -440,7 +434,7 @@ export default class Genoverse {
 
     if (this.tracksById.highlights) {
       this.tracksById.highlights.removeHighlights();
-      unremovableHighlights = $.map(this.tracksById.highlights.prop('featuresById'), function (h: any) { return h; });
+      unremovableHighlights = $.map(this.tracksById.highlights.featuresById, function (h: any) { return h; });
     }
 
     (<any>window)[this.storageType].removeItem(this.saveKey);
@@ -617,14 +611,6 @@ export default class Genoverse {
       if (this.tracks[i].disabled) {
         continue;
       }
-     /*      
-      mvc = this.tracks[i]._interface[func];
-      if (mvc) {
-        this.tracks[i][mvc][func].apply(this.tracks[i][mvc], args);
-      } else if (this.tracks[i][func]) {
-        this.tracks[i][func].apply(this.tracks[i], args);
-      }
-      */
       this.tracks[i][func](args);
     }
   }
@@ -931,6 +917,7 @@ export default class Genoverse {
   }
 
   setRange(start: number, end: number, update?: boolean, keepLength?: boolean) { // USED
+    
     this.prev.start = this.start;
     this.prev.end   = this.end;
     this.start      = Math.min(Math.max(typeof start === 'number' ? Math.floor(start) : parseInt(start, 10), 1), this.chromosomeSize);
@@ -956,33 +943,34 @@ export default class Genoverse {
     } else {
       this.length = this.end - this.start + 1;
     }
-
     this.setScale();
-
     if (update === true && (this.prev.start !== this.start || this.prev.end !== this.end)) {
       this.updateURL();
     }
+    
   }
 
   setScale() {
     this.prev.scale  = this.scale;
     this.scale       = this.width / this.length;
     this.scaledStart = this.start * this.scale;
-
+    
     if (this.prev.scale !== this.scale) {
+      
       this.left        = 0;
       this.minLeft     = Math.round((this.end   - this.chromosomeSize) * this.scale);
       this.maxLeft     = Math.round((this.start - 1) * this.scale);
       this.labelBuffer = Math.ceil(this.textWidth / this.scale) * this.longestLabel;
-
+      
       if (this.prev.scale) {
         this.cancelSelect();
         this.closeMenus();
       }
-
+      
       this.onTracks('setScale');
       this.onTracks('makeFirstImage');
     }
+    
   };
 
   checkTrackHeights() {
@@ -1116,22 +1104,22 @@ export default class Genoverse {
     }
 
     let sorted     = $.extend([], this.tracks).sort(function (a: any, b: any) { return a.order - b.order; });
-    let labels: any[];
-    let containers: any[];
+    let labels: any[] = [];
+    let containers: any[] = [];
 
     for (var i = 0; i < sorted.length; i++) {
-      if (sorted[i].prop('parentTrack')) {
+      if (sorted[i].parentTrack) {
         continue;
       }
 
-      sorted[i].prop('order', i);
+      sorted[i].order = i;
 
-      if (sorted[i].prop('menus').length) {
-        sorted[i].prop('top', sorted[i].prop('container').position().top);
+      if (sorted[i].menus.length) {
+        sorted[i].top = sorted[i].container.position().top;
       }
 
-      labels.push(sorted[i].prop('label')[0]);
-      containers.push(sorted[i].prop('container')[0]);
+      labels.push(sorted[i].label[0]);
+      containers.push(sorted[i].container[0]);
     }
 
     this.labelContainer.append(labels);
@@ -1140,13 +1128,22 @@ export default class Genoverse {
     // Correct the order
     this.tracks = sorted;
 
-    labels.map(function () { return $(this).data('track'); }).forEach(function () {
-      if (this.prop('menus').length) {
-        var diff = this.prop('container').position().top - this.prop('top');
-        this.prop('menus').css('top', function (i: any, top: any) { return parseInt(top, 10) + diff; });
-        this.prop('top', null);
-      }
-    });
+    labels
+      .map(
+        function (li) {
+          return $(li).data('track');
+        })
+      .forEach(
+        function (track) {
+          if (track.menus.length) {
+            var diff = track.container.position().top - track.top;
+            track.menus.css('top', function (i: any, top: any) {
+              return parseInt(top, 10) + diff;
+            });
+            track.top = null;
+          }
+        }
+      );
 
     sorted = labels = containers = null;
   }
@@ -1154,14 +1151,14 @@ export default class Genoverse {
   updateTrackOrder(e: any, ui: any) {
     const track = ui.item.data('track');
 
-    if (track.prop('unsortable')) {
+    if (track.unsortable) {
       return;
     }
 
     const prev = ui.item.prev().data('track');
     const next = ui.item.next().data('track');
-    const p    = prev ? prev.prop('order') : 0;
-    const n    = next ? next.prop('order') : 0;
+    const p    = prev ? prev.order : 0;
+    const n    = next ? next.order : 0;
     const o    = p || n;
     let order;
 
@@ -1171,7 +1168,7 @@ export default class Genoverse {
       order = o + (p ? 1 : -1) * Math.abs(Math.round(o) - o || 1) / 2;
     }
 
-    track.prop('order', order);
+    track.order = order;
 
     this.sortTracks();
     this.saveConfig();
@@ -1290,7 +1287,7 @@ export default class Genoverse {
     this.menus = this.menus.add(menu);
 
     if (track) {
-      track.prop('menus', track.prop('menus').add(menu));
+      track.menus = track.menus.add(menu);
     }
 
     return menu;
@@ -1406,7 +1403,7 @@ export default class Genoverse {
     browser.menus = browser.menus.add(feature.menuEl);
 
     if (track) {
-      track.prop('menus', track.prop('menus').add(feature.menuEl));
+      track.menus =  track.menus.add(feature.menuEl);
     }
 
     feature.menuEl.show(); // Must show before positioning, else position will be wrong

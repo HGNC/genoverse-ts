@@ -2,7 +2,6 @@ import * as $ from 'jquery';
 import Genoverse from './../genoverse';
 import TrackModel from './model';
 import TrackView from './view';
-import LegendTrack from "./controller/static/legend";
 
 export default abstract class TrackController {
   repeatLabels: any;
@@ -14,7 +13,6 @@ export default abstract class TrackController {
   featureHeight: number;
   id: any;
   imgContainers: any;
-  featurePositions: any;
   labelPositions: any;
   legendType: any;
   name: string;
@@ -75,7 +73,9 @@ export default abstract class TrackController {
   constructor(genoverse: Genoverse, properties?: any) {
     this.browser = genoverse;
     this.border = true;
-    $.extend(this, properties);
+    if(properties !== null && typeof properties === 'object'){
+      $.extend(this, properties);
+    }
   }
   
   setDefaults() {
@@ -155,32 +155,8 @@ export default abstract class TrackController {
     }
 
     this.height = height;
+    
     return height;
-  }
-
-
-  addLegend() {
-    if (!this.legend) {
-      return;
-    }
-    console.log('HELLO');
-    const legend = new LegendTrack(this.browser);
-    /*
-    var track = this;
-    var constructor = this.legend.prototype instanceof TrackLegend ? this.legend : TrackLegend;
-    var legendType = constructor.prototype.shared === true ? Genoverse.getTrackNamespace(constructor) : constructor.prototype.shared || this.id;
-    var config = {
-      id: legendType + 'Legend',
-      name: constructor.prototype.name || (this.name + ' Legend'),
-      type: legendType
-    };
-
-    this.legendType = legendType;
-
-    setTimeout(function () {
-      track.legendTrack = track.browser.legends[config.id] || track.browser.addTrack(constructor.extend(config));
-    }, 1);
-    */
   }
 
   changeChr() {
@@ -238,13 +214,13 @@ export default abstract class TrackController {
 
   destructor () {
     this.destroy();
-
-    const objs: any[] = [ this.view, this.model, this ];
-
-    for (let obj in objs) {
-      const anyObj = <any>obj;
-      for (const key in anyObj) {
-        delete (<any>obj)[key];
+    const view = this.view,
+          model = this.model,
+          controller = this;
+    const objs = [ view, model, controller ];
+    for(let i = 0; i< objs.length; i++){
+      for (const key in objs[i]) {
+        delete objs[i][key];
       }
     }
   }
@@ -438,9 +414,14 @@ export default abstract class TrackController {
   visibleFeatureHeight() {
     const bounds = { x: this.browser.scaledStart, w: this.width, y: 0, h: 9e99 };
     const scale = this.scale;
-    const features = this.featurePositions.search(bounds);
+
+    const features = this.view.scaleSettings[this.browser.chr][this.scale].featurePositions.search(bounds);
+
     const minHeight = this.hideEmpty ? 0 : this.minLabelHeight;
-    let height = Math.max.apply(Math, $.map(features, function (feature) { return feature.position[scale].bottom; }).concat(minHeight));
+    
+    let height = Math.max.apply(Math, $.map(features, (feature) => {
+      return feature.position[scale].bottom;
+    }).concat(minHeight));
 
     if (this.labels === 'separate') {
       this.labelTop = height;
@@ -521,25 +502,24 @@ export default abstract class TrackController {
     const controller = this;
 
     this.scale = this.browser.scale;
-
+    
     //this.setMVC();
     this.resetImageRanges();
-
+    
     const labels = this.labels;
 
     if (labels && labels !== 'overlay') {
       this.model.setLabelBuffer(this.browser.labelBuffer);
     }
-
+    
     if (this.threshold !== Infinity && this.resizable !== 'auto') {
       this.thresholdMessage = this.view.formatLabel(this.threshold);
     }
-    
-    $.each(this.view.setScaleSettings(this.scale), function (k, v) {
+    $.each(this.view.setScaleSettings(this.scale), (k, v) => {
       (<any>controller)[k] = v;
     });
-    
     this.hideMessage();
+    
   }
 
   move(delta: number) {
@@ -592,8 +572,7 @@ export default abstract class TrackController {
     }
   }
 
-  makeImage(myParams: any) {
-
+  makeImage(myParams: any): JQuery.Deferred<any, any, any> {
     myParams.scaledStart = myParams.scaledStart || myParams.start * myParams.scale;
     myParams.width = this.width;
     myParams.margin = 1;

@@ -1,18 +1,8 @@
 import Genoverse from './../../genoverse';
 import TrackView from './../view';
+import {GeneViewProperties} from './../../interfaces/gene';
+
 import * as $ from 'jquery';
-
-enum Bump {False, True, Label};
-
-interface GeneViewProperties {
-  margin: number,
-  height: number,
-  featureHeight: number,
-  width: number,
-  labels: boolean|string,
-  repeatLabels: boolean,
-  bump: Bump
-}
 
 export default abstract class GeneView extends TrackView {
   

@@ -56,9 +56,7 @@ export default class ChromosomeTrack extends TrackController {
       this.makeFirstImage();
     }
     this.view = this.createView();
-    if (this.legend) {
-      this.addLegend();
-    }
+    
   }
 
   trackFactory(genoverse: Genoverse, properties: any) {

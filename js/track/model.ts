@@ -162,7 +162,6 @@ export default abstract class TrackModel {
 
     this.setDataRange(chr, start, end);
     this.parseData(data, chr, start, end);
-
     if (this.allData) {
       this.url = false;
     }

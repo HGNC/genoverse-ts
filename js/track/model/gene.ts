@@ -1,10 +1,6 @@
 import Genoverse from './../../genoverse';
 import TrackModel from './../model';
-
-interface GeneModelPropeties {
-  url: string,
-  dataRequestLimit: number
-}
+import {GeneModelPropeties} from './../../interfaces/gene';
 
 export default abstract class GeneModel extends TrackModel {
   constructor(genoverse: Genoverse, properties: GeneModelPropeties){

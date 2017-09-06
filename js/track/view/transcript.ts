@@ -1,16 +1,19 @@
+import Genoverse from './../../genoverse';
 import TrackView from '../view';
+import {GeneViewProperties} from './../../interfaces/gene';
 import * as $ from 'jquery';
 
 enum Bump {False, True, Label}
 
 export default abstract class TranscriptView extends TrackView {
-  featureHeight   = 10;
-  labels          = 'default';
-  repeatLabels    = true;
-  bump            = Bump.True;
-  intronStyle     = 'curve';
-  intronLineWidth = 0.5;
-  utrHeight       = 7;
+  
+  utrHeight: number;
+  intronLineWidth: number;
+  intronStyle: string;
+
+  constructor(genoverse: Genoverse, properties?: GeneViewProperties){
+    super(genoverse, properties);
+  }
 
   drawBackground(feature: any, canvasContext: CanvasRenderingContext2D, imgData: any): void {
     $.noop;
@@ -22,7 +25,6 @@ export default abstract class TranscriptView extends TrackView {
 
   drawFeature(transcript: any, featureContext: any, labelContext: any, scale: number) {
     this.setFeatureColor(transcript);
-
     const exons     = ($.isArray(transcript.exons) ? $.extend(true, [], transcript.exons) : $.map($.extend(true, {}, transcript.exons || {}), function (e) { return e; })).sort(function (a: any, b: any) { return a.start - b.start; });
     const cds       = ($.isArray(transcript.cds)   ? $.extend(true, [], transcript.cds)   : $.map($.extend(true, {}, transcript.cds   || {}), function (c) { return c; })).sort(function (a: any, b: any) { return a.start - b.start; });
     const add       = Math.max(scale, this.widthCorrection);

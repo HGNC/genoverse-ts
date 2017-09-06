@@ -1,5 +1,8 @@
 import Genoverse from './../../../genoverse';
+import LegendTrack from './../static/legend';
 import GeneTrack from './../gene';
+import TrackView from './../../view';
+import TrackModel from './../../model';
 import EnsemblGeneView from './../../view/gene/ensembl';
 import EnsemblGeneModel from './../../model/gene/ensembl';
 import EnsemblTranscriptView from './../../view/transcript/ensembl';
@@ -10,6 +13,15 @@ import * as $ from 'jquery';
 enum Bump {False, True, Label}
 
 export default class EnsemblGeneTrack extends GeneTrack {
+
+  legendTrack: LegendTrack;
+  legendType: string;
+  modelStore:  {
+    [name: string]: TrackModel
+  };
+  viewStore:  {
+    [name: string]: TrackView
+  };
 
   constructor(genoverse: Genoverse) {
     super(genoverse, {
@@ -47,11 +59,30 @@ export default class EnsemblGeneTrack extends GeneTrack {
           },
           view: {
             class: EnsemblTranscriptView,
-            properties: {label: true}
+            properties: {
+              label: true,
+              featureHeight: 10,
+              labels: 'default',
+              repeatLabels:  true,
+              bump: Bump.True,
+              intronStyle: 'curve',
+              intronLineWidth: 0.5,
+              utrHeight: 7
+            }
           }
         }
       ]
     });
+
+    this.modelStore = {
+      'EnsemblTranscriptModel': undefined,
+      'EnsemblGeneModel': undefined
+    };
+
+    this.viewStore = {
+      'EnsemblTranscriptView': undefined,
+      'EnsemblGeneView': undefined
+    };
   }
 
   init(): void {
@@ -60,15 +91,62 @@ export default class EnsemblGeneTrack extends GeneTrack {
     this.addDomElements();
     this.addUserEventHandlers();
     this.deferreds = []; // tracks deferreds so they can be stopped if the track is destroyed
-    
-    if (this.browser.scale) { // WHAT IS THIS!!!
-      this.setScale();
-      this.makeFirstImage();
-    }
     this.view = this.createView();
-    if (this.legend) {
-      this.addLegend();
+  }
+
+  makeFirstImage(moveTo?: any): JQuery.Deferred<any, any, any> {
+    this.modelStore[this.model.constructor.name] = this.model;
+    this.viewStore[this.view.constructor.name] = this.view;
+    const settings = this._getSettingsForLength();
+    if(settings.model.class.name !== this.model.constructor.name){
+      if(this.modelStore[settings.model.class.name]){
+        this.model = this.modelStore[settings.model.class.name];
+      } else {
+        const Model = settings.model.class;
+        this.model = new Model(this.browser);
+      }
     }
+    if(settings.view.class.name !== this.view.constructor.name){
+      if(this.viewStore[settings.view.class.name]){
+        this.view = this.viewStore[settings.view.class.name];
+      } else {
+        const View = settings.view.class;
+        $.extend(this.viewProperties, settings.view.properties);
+        this.view = new View(this.browser, this.viewProperties);
+      }
+    }
+    this.setScale();
+
+    const deferred = super.makeFirstImage(moveTo);
+    if (this.legend) {
+      deferred.done(() => {
+        this.addLegend();
+      });
+    }
+    
+    return deferred;
+  }
+
+  addLegend() {
+    if (!this.legend) {
+      return;
+    }
+
+    this.legendType = 'Ensembl';
+    const config = {
+      id: this.legendType + 'Legend',
+      name: 'Ensembl Gene Legend',
+      type: this.legendType,
+      width: this.width,
+      height: this.height,
+      margin: 0
+    };
+
+    const track = this;
+    if(this.legendTrack instanceof LegendTrack){
+      this.legendTrack.remove();
+    }
+    this.legendTrack  = new LegendTrack(this.browser, config);
   }
 
   createView() {

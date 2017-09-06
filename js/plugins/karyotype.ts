@@ -70,7 +70,7 @@ function create() {
           mouseout  : (e: any) => {
             var el = $(e.relatedTarget);
 
-            if (karyotype.viewPoint.is(el) || karyotype.viewPoint.find(el).length || (el.prop('nodeName') === 'IMG' && el.parent().is(karyotype.track.imgContainers[0]))) {
+            if (karyotype.viewPoint.is(el) || karyotype.viewPoint.find(el).length || ((<any>el).nodeName === 'IMG' && el.parent().is(karyotype.track.imgContainers[0]))) {
               return true;
             }
 

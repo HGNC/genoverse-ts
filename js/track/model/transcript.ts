@@ -1,10 +1,6 @@
 import Genoverse from './../../genoverse';
 import TrackModel from '../model';
-
-interface TranscriptModelPropeties {
-  url: string,
-  dataRequestLimit: number
-}
+import {TranscriptModelPropeties} from './../../interfaces/transcript';
 
 export default abstract class TranscriptModel extends TrackModel {
   seenGenes: number;

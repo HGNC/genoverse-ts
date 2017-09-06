@@ -2,34 +2,8 @@ import Genoverse from './../../genoverse';
 import TrackController from './../controller';
 import TrackModel from './../model';
 import TrackView from './../view';
+import {GeneTrackProperties, Model, View} from './../../interfaces/gene';
 import * as $ from 'jquery';
-
-type Model = {
-  new(genoverse: Genoverse): TrackModel;
-};
-
-type View = {
-  new(genoverse: Genoverse, properties?: any): TrackView;
-};
-
-interface GeneTrackProperties {
-  name: string,
-  height: number,
-  legend: boolean,
-  labels: boolean,
-  margin: number,
-  resizable: boolean,
-  lengthDependentMV: [{
-    minLength: number
-    model:{
-      class: Model
-    },
-    view: {
-      class: View,
-      properties?: {label: boolean}
-    }
-  }]
-}
 
 export default abstract class GeneTrack extends TrackController {
 
@@ -41,7 +15,7 @@ export default abstract class GeneTrack extends TrackController {
     },
     view: {
       class: View,
-      properties?: {label: boolean}
+      properties?: any
     }
   }];
 
@@ -83,7 +57,7 @@ export default abstract class GeneTrack extends TrackController {
     return new View(this.browser, properties);
   }
 
-  makeFirstImage(moveTo?: any) {
+  /*makeFirstImage(moveTo?: any): JQuery.Deferred<any, any, any> {
     const settings = this._getSettingsForLength();
 
     if(settings.model.class.name !== this.model.constructor.name){
@@ -96,6 +70,9 @@ export default abstract class GeneTrack extends TrackController {
       this.view = new View(this.browser, this.viewProperties);
     }
     this.setScale();
+
+    if(this.constructor.name === 'EnsemblGeneTrack') console.log('TFI 1', this.featurePositions);
     return super.makeFirstImage(moveTo);
   }
+  */
 }

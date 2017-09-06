@@ -1,7 +1,6 @@
 import Genoverse from './../../genoverse';
 import TrackController from './../controller';
-import StaticModel from './../model/static';
-import StaticView from './../view/static';
+
 
 import * as $ from 'jquery';
 
@@ -52,12 +51,14 @@ export default abstract class StaticTrack extends TrackController {
     }
 
     const features = this.view.positionFeatures(this.model.findFeatures(params.chr, params.start, params.end), params);
-
+    
     if (features) {
+      
       const string = JSON.stringify(features);
-
       if (this.stringified !== string) {
+        
         const height = this.height;
+        
 
         params.width         = this.width;
         params.featureHeight = height;

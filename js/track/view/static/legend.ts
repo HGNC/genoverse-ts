@@ -39,10 +39,9 @@ export default class LegendView extends StaticView {
       xPos       = (x * xScale) + pad;
       yPos       = (y * yScale) + pad;
       labelWidth = this.context.measureText(f[i][0]).width;
-
       features.push(
         { x: xPos,           y: yPos, width: w,              height: this.featureHeight, color: f[i][1] },
-        { x: xPos + pad + w, y: yPos, width: labelWidth + 1, height: this.featureHeight, color: false, labelColor: this.textColor, labelWidth: labelWidth, label: f[i][0] }
+        { x: xPos + pad + w, y: yPos, width: labelWidth + 1, height: 0,                  color: false, labelColor: this.textColor, labelWidth: labelWidth, label: f[i][0] }
       );
 
       if (++x === cols) {
@@ -55,7 +54,6 @@ export default class LegendView extends StaticView {
     params.height     = this.height;
     params.width      = this.width;
     params.positioned = true;
-
     return super.positionFeatures(features, params);
   }
 }
