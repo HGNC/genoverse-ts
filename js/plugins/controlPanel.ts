@@ -115,7 +115,11 @@ function create() {
     beforeInit: function () {
       var browser = this;
       if (!this.tracksLibrary) {
-        this.tracksLibrary = $.grep(this.tracks, function (track: any) { return track.prototype.name; });
+        this.tracksLibrary = [];
+        $.each(this.tracks, (index: number, track: any): void => {
+          const trackName: string = track.Name;
+          if(trackName) this.tracksLibrary.push(track);
+        });
       }
 
       var panel = $(
@@ -257,26 +261,28 @@ function create() {
             });
 
             currentTracks.data('listTracks')();
-
             if (browser.tracksLibrary && browser.tracksLibrary.length) {
-              var tracksLibrary = $.map(browser.tracksLibrary, function (track: any) {
-                return track.prototype.name ? [[ track.prototype.name.toLowerCase(), track ]] : undefined;
+              const tracksLibrary = $.map(browser.tracksLibrary, function (track: any) {
+                if(track.Name){
+                  return [[ track.Name.toLowerCase(), track ]]
+                }
+                return undefined;
               }).sort(function (a: any, b: any) {
                 return a[0] > b[0] ? 1 : -1;
               });
-
+              
               for (var i = 0; i < tracksLibrary.length; i++) {
                 (function (track: any) {
                   $('<div class="gv-tracks-library-item">').append(
                     $('<i class="gv-add-track gv-menu-button fa fa-plus-circle"> ').on('click', function () {
                       var sortableTracks = $.grep(browser.tracks, function (t: any) { return t.unsortable !== true; });
-
+                      // NEED TO LOOK INTO THIS!!!
                       browser.trackIds = browser.trackIds || {};
                       browser.trackIds[track.prototype.id] = browser.trackIds[track.prototype.id] || 1;
 
                       browser.addTrack(track.extend({ id: track.prototype.id + (browser.tracksById[track.prototype.id] ? browser.trackIds[track.prototype.id]++ : '') }));
                     })
-                  ).append('<span>' + track.prototype.name + '</span>').appendTo(availableTracks).data('track', track.prototype);
+                  ).append('<span>' + track.Name + '</span>').appendTo(availableTracks).data('track', track);
                 })(tracksLibrary[i][1]);
               }
             }

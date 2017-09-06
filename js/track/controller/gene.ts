@@ -56,23 +56,4 @@ export default abstract class GeneTrack extends TrackController {
     this.viewProperties = properties;
     return new View(this.browser, properties);
   }
-
-  /*makeFirstImage(moveTo?: any): JQuery.Deferred<any, any, any> {
-    const settings = this._getSettingsForLength();
-
-    if(settings.model.class.name !== this.model.constructor.name){
-      const Model = settings.model.class;
-      this.model = new Model(this.browser);
-    }
-    if(settings.view.class.name !== this.view.constructor.name){
-      const View = settings.view.class;
-      $.extend(this.viewProperties, settings.view.properties);
-      this.view = new View(this.browser, this.viewProperties);
-    }
-    this.setScale();
-
-    if(this.constructor.name === 'EnsemblGeneTrack') console.log('TFI 1', this.featurePositions);
-    return super.makeFirstImage(moveTo);
-  }
-  */
 }

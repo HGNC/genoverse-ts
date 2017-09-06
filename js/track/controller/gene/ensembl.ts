@@ -7,10 +7,8 @@ import EnsemblGeneView from './../../view/gene/ensembl';
 import EnsemblGeneModel from './../../model/gene/ensembl';
 import EnsemblTranscriptView from './../../view/transcript/ensembl';
 import EnsemblTranscriptModel from './../../model/transcript/ensembl';
-
+import { Bump } from './../../../interfaces/gene';
 import * as $ from 'jquery';
-
-enum Bump {False, True, Label}
 
 export default class EnsemblGeneTrack extends GeneTrack {
 
@@ -23,9 +21,11 @@ export default class EnsemblGeneTrack extends GeneTrack {
     [name: string]: TrackView
   };
 
+  public static Name: string = 'Ensembl Genes';
+
   constructor(genoverse: Genoverse) {
     super(genoverse, {
-      name: 'Genes',
+      name: EnsemblGeneTrack.Name,
       height: 200,
       legend: true,
       labels: true,
