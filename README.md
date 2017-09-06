@@ -1,6 +1,8 @@
 # genoverse-hgnc
 
-This project is still being developed upon and has lots of bugs and errors. Please do not use in its present state.
+This project is still being developed upon and has lots of bugs, errors and many parts of the code need to be cleaned up. 
+
+Please do not use in its present state for presenting data.
 
 To develop on the code clone the project via git and then:
 ```
