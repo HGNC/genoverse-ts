@@ -3,8 +3,6 @@ import TrackView from '../view';
 import {GeneViewProperties} from './../../interfaces/gene';
 import * as $ from 'jquery';
 
-enum Bump {False, True, Label}
-
 export default abstract class TranscriptView extends TrackView {
   
   utrHeight: number;
