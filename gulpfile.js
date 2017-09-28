@@ -15,7 +15,7 @@ var babelify = require('babelify'),
   browserSync = require('browser-sync').create();
 
 var ts = require("gulp-typescript");
-var tsProject = ts.createProject("tsconfig.json");
+var tsProject = ts.createProject("tsconf.json");
 var tsify = require("tsify");
 var paths = {
   pages: ['*.html']
@@ -60,7 +60,12 @@ gulp.task('build-css', function () {
     .pipe(gulp.dest('./tsDist/css'));
 });
 
-gulp.task("ts", ["copy-html", "build-css", "copy-fonts", "copy-images"], function () {
+gulp.task("copy-html", function () {
+  return gulp.src(paths.pages)
+    .pipe(gulp.dest("tsDist"));
+});
+
+gulp.task("ts", function () {
   return browserify('js/global.ts')
     .plugin(tsify, {
       noImplicitAny: false,
@@ -76,15 +81,14 @@ gulp.task("ts", ["copy-html", "build-css", "copy-fonts", "copy-images"], functio
     .pipe(gulp.dest("tsDist"));
 });
 
-gulp.task("copy-html", function () {
-  return gulp.src(paths.pages)
-    .pipe(gulp.dest("tsDist"));
-});
+gulp.task("build", gulp.parallel("copy-html", "build-css", "copy-fonts", "copy-images", "ts"));
 
-gulp.task('serve-ts', function () {
+gulp.task('serve', function () {
   browserSync.init({
     server: {
       baseDir: "./tsDist"
     }
   });
 });
+
+gulp.task('default', gulp.series('build', 'serve'));
