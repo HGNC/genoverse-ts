@@ -594,6 +594,7 @@ export default class Genoverse {
   }
 
   onTracks(key: any, value1?: any, value2?: any, value3?: any, value4?: any) { 
+    
     if(! this.tracksLoaded && this.tracks){
       for(let i=0; i<this.tracks.length; i++){
         this.tracks[i] = new this.tracks[i](this);
@@ -857,7 +858,6 @@ export default class Genoverse {
   move(delta: number) {
     const scale = this.scale;
     let start, end, left;
-
     if (scale > 1) {
       delta = Math.round(delta / scale) * scale; // Force stepping by base pair when in small regions
     }
@@ -1177,7 +1177,7 @@ export default class Genoverse {
   updateURL() {
     if (this.urlParamTemplate) {
       if (this.useHash) {
-        window.location.hash = this.getQueryString();
+        window.location.hash = this.getQueryString();   
       } else {
         window.history.pushState({}, '', this.getQueryString());
       }

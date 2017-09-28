@@ -522,10 +522,10 @@ export default abstract class TrackController {
     
   }
 
-  move(delta: number) {
-    this.left += delta;
+  move(delta: number[]) {
+    var sum = delta.reduce((a, b) => a + b, 0);
+    this.left += sum;
     this.scrollContainer.css('left', this.left);
-
     const scrollStart = this.scrollStart;
 
     if (this.imgRange[scrollStart] && this.imgRange[scrollStart].left + this.left > -this.scrollBuffer * this.width) {
@@ -542,7 +542,7 @@ export default abstract class TrackController {
       (this.imgRange[scrollStart] || {}).left -= this.width;
       (this.scrollRange[scrollStart] || {}).start -= this.browser.length;
     }
-
+    
     if (this.imgRange[scrollStart] && this.imgRange[scrollStart].right + this.left < this.scrollBuffer * this.width) {
       const start = this.scrollRange[scrollStart].end + 1;
       this.makeImage({
@@ -567,7 +567,14 @@ export default abstract class TrackController {
       this.resetImageRanges();
       this.makeFirstImage(scrollStart);
     } else {
-      this.move(typeof delta === 'number' ? delta : (start - this.browser.start) * this.scale);
+      let d;
+      if(typeof delta === 'number'){
+        d = [delta];
+      } else {
+        const tmp = (start - this.browser.start) * this.scale;
+        d = [tmp];
+      }
+      this.move(d);
       this.checkHeight();
     }
   }

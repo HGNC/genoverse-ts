@@ -22,8 +22,12 @@ function create() {
         var el = $(this);
 
         el.find('.gv-scroll-left, .gv-scroll-right').on({
-          mousedown : function () { browser.startDragScroll(); },
-          mouseup   : function () { browser.stopDragScroll();  }
+          mousedown : function () {
+            browser.startDragScroll();
+          },
+          mouseup   : function () {
+            browser.stopDragScroll();
+          }
         });
 
         el.find('.gv-scroll-left').mousehold(50, function () {
