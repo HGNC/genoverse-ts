@@ -693,6 +693,12 @@ export default class Genoverse {
       }
       this.checkTrackHeights();
     }
+    
+    for (let index = 0; index < this.tracks.length; index++) {
+      if (typeof this.tracks[index].addLegend === "function") { 
+        this.tracks[index].addLegend();
+      }
+    }
   }
 
   startDragSelect(e: any) { // USED

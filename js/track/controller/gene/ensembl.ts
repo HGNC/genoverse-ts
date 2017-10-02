@@ -138,7 +138,7 @@ export default class EnsemblGeneTrack extends GeneTrack {
       name: 'Ensembl Gene Legend',
       type: this.legendType,
       width: this.width,
-      height: this.height,
+      height: 100,
       margin: 0
     };
 
