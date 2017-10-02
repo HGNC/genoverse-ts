@@ -1,22 +1,12 @@
 import * as $ from "jquery";
 import 'jquery-ui';
 import RTree from 'rtree';
-import focusRegion from './plugins/focusRegion';
-import fullscreen from './plugins/fullscreen';
 import karyotype from './plugins/karyotype';
 import tooltips from './plugins/tooltips';
 import trackControls from './plugins/trackControls';
-
 import GRCh37 from './interfaces/genomes/grch37';
 import GRCh38 from './interfaces/genomes/grch38';
 import controlPanel from './plugins/controlPanel';
-//fileDrop
-
-
-
-//import TrackController from "./track/controller";
-//import TrackModel from "./track/model";
-//import Track from "./track";
 import Genome from "./interfaces/genome";
 import { Chromosomes } from "./interfaces/genome";
 
@@ -26,8 +16,6 @@ export default class Genoverse {
   hideTooltip: boolean;
   parent?: Genoverse;
   controls: any;
-  fullscreenVars: any;
-  preFullscreenWidth: number;
   focusRegion: any;
   failed: boolean;
   labelBuffer: number;
@@ -105,8 +93,6 @@ export default class Genoverse {
       <div class="gv-menu-loading">Loading...</div>
       <div class="gv-menu-content">
         <div class="gv-title"></div>
-        <a class="gv-focus" href="#">Focus here</a>
-        <a class="gv-highlight" href="#">Highlight this feature</a>
         <table></table>
       </div>
     </div>`
@@ -131,8 +117,6 @@ export default class Genoverse {
   };
   public static Plugins: any = { // USED
     controlPanel: controlPanel,
-    focusRegion: focusRegion,
-    fullscreen: fullscreen,
     tooltips: tooltips,
     trackControls: trackControls,
     karyotype: karyotype
@@ -166,7 +150,6 @@ export default class Genoverse {
     obj.functions[key] = obj[key];
     obj[key] = function () {
       const args          = [].slice.call(arguments);
-      //var currentConfig = (this._currentConfig || (this.track ? this.track._currentConfig : {}) || {}).func;
       let rtn;
 
       function trigger(when) {
@@ -213,17 +196,9 @@ export default class Genoverse {
     this.loadPlugins();
     Genoverse.wrapFunctions(this);
     this.init();
-    /*
-    if(this.tracks){
-      for(let i=0; i<this.tracks.length; i++){
-        this.tracks[i] = new this.tracks[i](this);
-      }
-    }
-    */
   }
 
   loadGenome(): void { // USED
-    
     if (typeof this.genome === 'string') {
       const genomeName: string = <string>this.genome;
       const Genome = Genoverse.Genomes[genomeName];
@@ -276,7 +251,6 @@ export default class Genoverse {
     }
 
     // Load plugins css file
-    
     $.map(plugins, loadPlugin);
     
     for (let i = 0; i < plugins.length; i++) {
@@ -319,12 +293,7 @@ export default class Genoverse {
     }
 
     this.canChangeChr = !!this.genome;
-    this.setRange(coords.start, coords.end);
-
-    if (this.highlights && this.highlights.length) {
-      this.addHighlights(this.highlights);
-    }
-    
+    this.setRange(coords.start, coords.end);  
   }
 
   loadConfig() { // USED
@@ -356,28 +325,7 @@ export default class Genoverse {
         tracksById[this.tracks[i].prototype.id] = this.tracks[i];
       }
     }
-    /*
-    for (i = 0; i < config.length; i++) {
-      track = tracksById[config[i].id];
-
-      if (track) {
-        setConfig(track, config[i]);
-        track._fromStorage = true;
-      } else if (tracksByNamespace[config[i].namespace]) {
-        track = tracksByNamespace[config[i].namespace];
-
-        this.trackIds = this.trackIds || {};
-        this.trackIds[track.prototype.id] = this.trackIds[track.prototype.id] || 1;
-
-        config[i].id = config[i].id || track.prototype.id;
-
-        track = track.extend({ id: !tracksById[config[i].id] ? config[i].id : track.prototype.id + (tracksById[track.prototype.id] ? this.trackIds[track.prototype.id]++ : '') });
-
-        setConfig(track, config[i]);
-        tracks.push(track);
-      }
-    }
-    */
+    
     for (i = 0; i < this.tracks.length; i++) {
       if (this.tracks[i].prototype.id && !this.tracks[i]._fromStorage) {
         continue;
@@ -398,30 +346,6 @@ export default class Genoverse {
     }
 
     const config: any[] = [];
-    /*
-    for (let i = 0; i < this.tracks.length; i++) {
-      if (this.tracks[i].id && !(this.tracks[i] instanceof LegendTrack) && !(this.tracks[i] instanceof HighlightRegionTrack)) {
-        // when saving height, initialHeight is the height of the track once margins have been added, while defaultHeight is the DEFINED height of the track.
-        // Subtracting the difference between them gives you back the correct height to input back into the track when loading configuration
-        const conf: {[k: string]: any} = {
-          id         : this.tracks[i].id,
-          namespace  : this.tracks[i].namespace,
-          order      : this.tracks[i].order,
-          autoHeight : this.tracks[i].autoHeight,
-          height     : this.tracks[i].height - (this.tracks[i].initialHeight - this.tracks[i].defaultHeight)
-        };
-
-        if (this.tracks[i].config) {
-          for (const j in this.tracks[i].config) {
-            conf.config    = conf.config || {};
-            conf.config[j] = this.tracks[i].config[j];
-          }
-        }
-
-        config.push(conf);
-      }
-    }
-    */
     // Safari in private browsing mode does not allow writes to storage, so wrap in a try/catch to stop errors occuring
     try {
       (<any>window)[this.storageType].setItem(this.saveKey, JSON.stringify(config));
@@ -441,14 +365,6 @@ export default class Genoverse {
 
     this._constructing = true;
     this.savedConfig   = {};
-
-    //this.removeTracks($.extend([],    this.tracks)); // Shallow clone to ensure that removeTracks doesn't hit problems when splicing this.tracks
-    //this.addTracks($.extend([], true, this.defaultTracks));
-
-    if (unremovableHighlights.length) {
-      this.addHighlights(unremovableHighlights);
-    }
-
     this._constructing = false;
   }
 
@@ -460,7 +376,6 @@ export default class Genoverse {
       axis   : 'y',
       helper : 'clone',
       cursor : 'move',
-      //update : $.proxy(this.updateTrackOrder, this),
       start  : function (e: any, ui: any) {
         ui.placeholder.css({ height: ui.item.height(), visibility: 'visible' }).html(ui.item.html());
         ui.helper.hide();
@@ -548,8 +463,6 @@ export default class Genoverse {
           browser.startDragScroll(e);
           browser.move(-deltaX * 10);
           browser.stopDragScroll(false);
-        } else if (browser.wheelAction === 'zoom') {
-          return browser.mousewheelZoom(e, delta);
         }
       },
       dblclick: function (e: any) {
@@ -558,7 +471,6 @@ export default class Genoverse {
         }
 
         browser.hideMessages();
-        browser.mousewheelZoom(e, 1);
       }
     }, '.gv-image-container, .gv-selector');
 
@@ -568,7 +480,7 @@ export default class Genoverse {
       switch (e.target.className) {
         case 'gv-zoom-here' : browser.setRange(pos.start, pos.end, true); break;
         case 'gv-center'    : browser.moveTo(browser.chr, pos.start, pos.end, true, true); browser.cancelSelect(); break;
-        case 'gv-highlight' : browser.addHighlight({ chr: browser.chr, start: pos.start, end: pos.end });
+        //case 'gv-highlight' : browser.addHighlight({ chr: browser.chr, start: pos.start, end: pos.end });
         case 'gv-cancel'    : browser.cancelSelect(); break;
         default             : break;
       }
@@ -576,19 +488,6 @@ export default class Genoverse {
 
     (<any>documentEvents)['mouseup'    + this.eventNamespace] = $.proxy(this.mouseup,   this);
     (<any>documentEvents)['mousemove'  + this.eventNamespace] = $.proxy(this.mousemove, this);
-    (<any>documentEvents)['keydown'    + this.eventNamespace] = $.proxy(this.keydown,   this);
-    (<any>documentEvents)['keyup'      + this.eventNamespace] = $.proxy(this.keyup,     this);
-    (<any>documentEvents)['mousewheel' + this.eventNamespace] = function (e: any) {
-      if (browser.wheelAction === 'zoom') {
-        if (browser.wheelTimeout) {
-          clearTimeout(browser.wheelTimeout);
-        }
-
-        browser.noWheelZoom  = browser.noWheelZoom || e.target !== browser.container[0];
-        browser.wheelTimeout = setTimeout(function () { browser.noWheelZoom = false; }, 300);
-      }
-    };
-
     $(document).on(documentEvents);
     $(window).on((this.useHash ? 'hashchange' : 'popstate') + this.eventNamespace, $.proxy(this.popState, this));
   }
@@ -642,39 +541,6 @@ export default class Genoverse {
     this.reset('resizing');
   }
 
-  mousewheelZoom(e: any, delta: number) { // USED
-    const browser = this;
-
-    clearTimeout(this.zoomDeltaTimeout);
-    clearTimeout(this.zoomTimeout);
-
-    this.zoomDeltaTimeout = setTimeout(function () {
-      if (delta > 0) {
-        browser.zoomInHighlight.css({ left: e.pageX - 20, top: e.pageY - 20, display: 'block' }).animate({
-          width: 80, height: 80, top: '-=20', left: '-=20'
-        }, {
-          complete: function () { $(this).css({ width: 40, height: 40, display: 'none' }); }
-        });
-      } else {
-        browser.zoomOutHighlight.css({ left: e.pageX - 40, top: e.pageY - 40, display: 'block' }).animate({
-          width: 40, height: 40, top: '+=20', left: '+=20'
-        }, {
-          complete: function () { $(this).css({ width: 80, height: 80, display: 'none' }); }
-        });
-      }
-    }, 100);
-
-    this.zoomTimeout = setTimeout(function () {
-      browser[delta > 0 ? 'zoomIn' : 'zoomOut'](e.pageX - (<JQuery<HTMLElement>>browser.container).offset().left - browser.labelWidth);
-
-      if (browser.dragAction === 'select') {
-        browser.moveSelector(e);
-      }
-    }, 300);
-
-    return false;
-  }
-
   startDragScroll(e?: any) { // USED
     this.dragging    = 'scroll';
     this.scrolling   = !e;
@@ -701,131 +567,12 @@ export default class Genoverse {
     }
   }
 
-  startDragSelect(e: any) { // USED
-    if (!e) {
-      return false;
-    }
-
-    const x = Math.max(0, e.pageX - this.wrapper.offset().left - 2);
-
-    this.dragging        = 'select';
-    this.selectorStalled = false;
-    this.selectorStart   = x;
-
-    this.selector.css({ left: x, width: 0 }).removeClass('gv-crosshair');
-    this.selectorControls.hide();
-  }
-
-  stopDragSelect(e: any) {
-    if (!e) {
-      return false;
-    }
-
-    this.dragging        = undefined;
-    this.selectorStalled = true;
-
-    if (this.selector.outerWidth(true) < 2) {
-      return this.cancelSelect();
-    }
-
-    // Calculate the position, so that selectorControls appear near the mouse cursor
-    const top = Math.min(e.pageY - this.wrapper.offset().top, this.wrapper.outerHeight(true) - 1.2 * this.selectorControls.outerHeight(true));
-    const pos = this.getSelectorPosition();
-
-    this.selectorControls.find('.gv-chr').html(this.chr);
-    this.selectorControls.find('.gv-start').html(pos.start);
-    this.selectorControls.find('.gv-end').html(pos.end);
-
-    this.selectorControls.find('.gv-selector-location').html(this.chr + ':' + pos.start + '-' + pos.end).end().css({
-      top  : top,
-      left : this.selector.outerWidth(true) / 2 - this.selectorControls.outerWidth(true) / 2
-    }).show();
-  }
-
   cancelSelect(keepDragging?: boolean) { // USED
-    if (!keepDragging) {
-      this.dragging = undefined;
-    }
-
-    this.selectorStalled = false;
-
-    this.selector.addClass('gv-crosshair').width(0);
-    this.selectorControls.hide();
-
-    if (this.dragAction === 'scroll') {
-      this.selector.hide();
-    }
+    this.selector.hide();
   };
 
-  dragSelect(e: any) {
-    const x = e.pageX - this.wrapper.offset().left;
-
-    if (x > this.selectorStart) {
-      this.selector.css({
-        left  : this.selectorStart,
-        width : Math.min(x - this.selectorStart, this.width - this.selectorStart - 1)
-      });
-    } else {
-      this.selector.css({
-        left  : Math.max(x, 1),
-        width : Math.min(this.selectorStart - x, this.selectorStart - 1)
-      });
-    }
-  }
-
-  setDragAction(action: string, keepSelect?: boolean) { // USED
-    this.dragAction = action;
-
-    if (this.dragAction === 'select') {
-      this.selector.addClass('gv-crosshair').width(0).show();
-    } else if (keepSelect && !this.selector.hasClass('gv-crosshair')) {
-      this.selectorStalled = false;
-    } else {
-      this.cancelSelect();
-      this.selector.hide();
-    }
-  }
-
-  toggleSelect(on?: boolean) { // USED
-    if (on) {
-      this.prev.dragAction = 'scroll';
-      this.setDragAction('select');
-    } else {
-      this.setDragAction(this.prev.dragAction, true);
-      delete this.prev.dragAction;
-    }
-  }
-
-  setWheelAction(action: string) {
-    this.wheelAction = action;
-  }
-
-  keydown(e: any) {
-    if (e.which === 16 && !this.prev.dragAction && this.dragAction === 'scroll') { // shift key
-      this.toggleSelect(true);
-    } else if (e.which === 27) { // escape key
-      this.cancelSelect();
-      this.closeMenus();
-    }
-  }
-
-  keyup(e: any) {
-    if (e.which === 16 && this.prev.dragAction) { // shift key
-      this.toggleSelect();
-    }
-  }
-
   mousedown(e: any) { // USED
-    if (e.shiftKey) {
-      if (this.dragAction === 'scroll') {
-        this.toggleSelect(true);
-      }
-    } else if (this.prev.dragAction) {
-      this.toggleSelect();
-    }
-
     switch (this.dragAction) {
-      case 'select' : this.startDragSelect(e); break;
       case 'scroll' : this.startDragScroll(e); break;
       default       : break;
     }
@@ -837,7 +584,6 @@ export default class Genoverse {
     }
 
     switch (this.dragging) {
-      case 'select' : this.stopDragSelect(e); break;
       case 'scroll' : this.stopDragScroll();  break;
       default       : break;
     }
@@ -847,11 +593,8 @@ export default class Genoverse {
     if (this.dragging && !this.scrolling) {
       switch (this.dragAction) {
         case 'scroll' : this.move(e.pageX - this.dragOffset - this.left); break;
-        case 'select' : this.dragSelect(e); break;
         default       : break;
       }
-    } else if (this.dragAction === 'select') {
-      this.moveSelector(e);
     }
   }
 
@@ -1044,11 +787,6 @@ export default class Genoverse {
     }
 
     for (var i = 0; i < tracks.length; i++) {
-      /*tracks[i] = new tracks[i]($.extend(defaults, {
-        order     : typeof order === 'number' ? order : i,
-        config    : this.savedConfig ? $.extend(true, {}, this.savedConfig[tracks[i].prototype.id]) : undefined
-      }));
-      */
       order = typeof order === 'number' ? order : i;
       const config = this.savedConfig ? $.extend(true, {}, this.savedConfig[tracks[i].prototype.id]) : undefined;
       tracks[i].order = order;
@@ -1064,9 +802,6 @@ export default class Genoverse {
         this.tracks[i] = tracks[i];
       }
     }
-
-    //this.sortTracks();
-    //this.saveConfig();
     return tracks;
   }
 
@@ -1315,11 +1050,6 @@ export default class Genoverse {
       return false;
     }
 
-    function highlight() {
-      browser.addHighlight($(this).data());
-      return false;
-    }
-
     if (!feature.menuEl) {
       menu       = browser.menuTemplate.clone(true).data({ browser: browser, feature: feature });
       content    = $('.gv-menu-content', menu).remove();
@@ -1355,7 +1085,6 @@ export default class Genoverse {
             linkData = { chr: chr, start: start, end: Math.max(end, start), label: feature.label || (properties[i].title || '').replace(/<[^>]+>/g, ''), color: feature.color };
 
             $('.gv-focus',     el).data(linkData).on('click', focus);
-            $('.gv-highlight', el).data(linkData).on('click', highlight);
           } else {
             $('.gv-focus, .gv-highlight', el).remove();
           }
@@ -1442,19 +1171,6 @@ export default class Genoverse {
         end   = end <= start ? start : end;
 
     return { start: start, end: end, left: left, width: width };
-  }
-
-  addHighlight(highlight: any) {
-    this.addHighlights([ highlight ]);
-  }
-
-  addHighlights(highlights: any) { // USED
-    /*if (!this.tracksById.highlights) {
-      this.addTrack(HighlightRegionTrack);
-    }
-
-    this.tracksById.highlights.addHighlights(highlights);
-    */
   }
 
   on(events: any, obj?: any, fn?: any, once?: any) {

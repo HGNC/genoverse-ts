@@ -1,7 +1,7 @@
 import Genoverse from  '../genoverse';
 import * as $ from 'jquery';
 import 'jquery-ui';
-import './../lib/jquery-hashchange';
+//import './../lib/jquery-hashchange';
 import './../lib/jquery-mousehold';
 
 function create() {
@@ -54,56 +54,6 @@ function create() {
         'class' : 'gv-zoom-out',
         action  : function (browser: Genoverse) { browser.zoomOut(); }
       }]
-    },
-
-    // Toogle drag action
-    {
-      name    : 'Toggle your mouse drag action between scroll left/right and select region',
-      buttons : [{
-        name    : 'Mouse drag action to scroll the browser left or right',
-        icon    : '<i class="fa fa-arrows-h"></i>',
-        'class' : 'gv-drag-scroll',
-        action  : function (browser: Genoverse) {
-          browser.setDragAction('scroll');
-          $(this).addClass('gv-active').siblings().removeClass('gv-active');
-        }
-      }, {
-        name    : 'Mouse drag action to select a region',
-        icon    : '<i></i>',
-        'class' : 'gv-drag-select',
-        action  : function (browser: Genoverse) {
-          browser.setDragAction('select');
-          $(this).addClass('gv-active').siblings().removeClass('gv-active');
-        }
-      }],
-      init: function (browser: Genoverse) {
-        $(this).find('.gv-drag-' + browser.dragAction).addClass('gv-active').siblings().removeClass('gv-active');
-      }
-    },
-
-    // Toogle wheel action
-    {
-      name    : 'Toggle your mouse wheel action between zoom in/out and default page scroll',
-      buttons : [{
-        name    : 'Mouse wheel action to scroll the page up and down',
-        icon    : '<i class="fa fa-arrows-v"></i>',
-        'class' : 'gv-wheel-off',
-        action  : function (browser: Genoverse) {
-          browser.setWheelAction('off');
-          $(this).addClass('gv-active').siblings().removeClass('gv-active');
-        }
-      }, {
-        name    : 'Mouse wheel to zoom in and out',
-        icon    : '&#177;',
-        'class' : 'gv-wheel-zoom',
-        action  : function (browser: Genoverse) {
-          browser.setWheelAction('zoom');
-          $(this).addClass('gv-active').siblings().removeClass('gv-active');
-        }
-      }],
-      init: function (browser: Genoverse) {
-        $(this).find('.gv-wheel-' + browser.wheelAction).addClass('gv-active').siblings().removeClass('gv-active');
-      }
     }
   ];
 
@@ -310,7 +260,6 @@ function create() {
     },
 
     afterAddDomElements: function () {
-      this.wrapper.after('<div class="gv-powered-by">Powered by <a target="_blank" href="http://genoverse.org">Genoverse</a></div>');
       this.superContainer.find('.gv-panel-left').append(this.labelContainer);
     },
 
