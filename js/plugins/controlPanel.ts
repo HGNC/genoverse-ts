@@ -19,7 +19,7 @@ function create() {
         'class' : 'gv-scroll-right'
       }],
       init: function (browser: Genoverse) {
-        var el = $(this);
+        const el = $(this);
 
         el.find('.gv-scroll-left, .gv-scroll-right').on({
           mousedown : function () {
@@ -117,7 +117,7 @@ function create() {
   
   this.on({
     beforeInit: function () {
-      var browser = this;
+      const browser = this;
       if (!this.tracksLibrary) {
         this.tracksLibrary = [];
         $.each(this.tracks, (index: number, track: any): void => {
@@ -126,7 +126,7 @@ function create() {
         });
       }
 
-      var panel = $(
+      const panel = $(
         '<table cellspacing=0 cellpadding=0 class="gv">' +
         '  <tr>' +
         '    <td class="gv-panel gv-panel-left"></td>' +
@@ -140,14 +140,14 @@ function create() {
       this.superContainer = this.container;
       this.container      = $('.gv-canvas-container', this.container);
 
-      for (var i = 0; i < browser.controls.length; i++) {
+      for (let i = 0; i < browser.controls.length; i++) {
         (function (control) {
-          var buttonSet = $('<div class="gv-button-set">').attr('title', control.name).appendTo(browser.superContainer.find('.gv-panel-right'));
-          var buttons   = control.buttons || [ control ];
-          var el;
+          const buttonSet = $('<div class="gv-button-set">').attr('title', control.name).appendTo(browser.superContainer.find('.gv-panel-right'));
+          const buttons   = control.buttons || [ control ];
+          let el;
 
           $.each(buttons, function (i: number, button: any) {
-            var el = $('<button>' + button.icon + '</button>').addClass(button['class']).attr('title', button.name).appendTo(buttonSet);
+            el = $('<button>' + button.icon + '</button>').addClass(button['class']).attr('title', button.name).appendTo(buttonSet);
 
             if (button.action) {
               el.on('click', function () {
@@ -183,9 +183,9 @@ function create() {
     },
 
     afterInit: function () {
-      var browser      = this;
+      let browser      = this;
       var tracksButton = $('<button title="Tracks menu"><i class="fa fa-navicon"></i> Tracks</button>').on('click', function () {
-        var button = this;
+        let button = this;
 
         function getTrackTags(track: any, tags: any[]) {
           if (track.constructor && track.constructor.ancestor && track.constructor.ancestor.prototype) {
@@ -199,7 +199,7 @@ function create() {
           $('.gv-menu.gv-tracks-menu .gv-close').trigger('click');
           $(this).removeClass('gv-active');
         } else {
-          var menu = $(this).data('menu');
+          let menu = $(this).data('menu');
 
           if (menu) {
             menu.show();
@@ -212,18 +212,18 @@ function create() {
             menu.css({ marginLeft: menu.width() / -2 });
 
             $('input[placeholder=Search]', menu).on('keyup', function () {
-              var str = (<HTMLInputElement>this).value.toLowerCase();
+              const str = (<HTMLInputElement>this).value.toLowerCase();
 
               $('.gv-tracks-library-item', menu).each(function () {
-                var track = $(this).data('track');
-                var match = false;
+                const track = $(this).data('track');
+                let match = false;
 
                 if (track.name && track.name.toLowerCase().indexOf(str) >= 0) {
                   match = true;
                 } else {
-                  var tags = getTrackTags(track, []).concat(track.tags || []);
+                  let tags = getTrackTags(track, []).concat(track.tags || []);
 
-                  for (var i = 0; i < tags.length; i++) {
+                  for (let i = 0; i < tags.length; i++) {
                     if (tags[i].toLowerCase().indexOf(str) >= 0) {
                       match = true;
                       break;
@@ -239,11 +239,11 @@ function create() {
               $(button).removeClass('gv-active');
             });
 
-            var availableTracks = $('.gv-available-tracks', menu);
-            var currentTracks   = $('.gv-current-tracks',   menu).data({
+            let availableTracks = $('.gv-available-tracks', menu);
+            let currentTracks   = $('.gv-current-tracks',   menu).data({
               reload     : function () { $(this).empty().data('listTracks')(); },
               listTracks : function () {
-                for (var i = 0; i < browser.tracks.length; i++) {
+                for (let i = 0; i < browser.tracks.length; i++) {
                   if (browser.tracks[i].name && browser.tracks[i].removable !== false && !browser.tracks[i].parentTrack) {
                     (function (track) {
                       $('<div>')
@@ -275,16 +275,20 @@ function create() {
                 return a[0] > b[0] ? 1 : -1;
               });
               
-              for (var i = 0; i < tracksLibrary.length; i++) {
+              for (let i = 0; i < tracksLibrary.length; i++) {
                 (function (track: any) {
                   $('<div class="gv-tracks-library-item">').append(
                     $('<i class="gv-add-track gv-menu-button fa fa-plus-circle"> ').on('click', function () {
-                      var sortableTracks = $.grep(browser.tracks, function (t: any) { return t.unsortable !== true; });
+                      const sortableTracks = $.grep(browser.tracks, function (t: any) { return t.unsortable !== true; });
                       // NEED TO LOOK INTO THIS!!!
                       browser.trackIds = browser.trackIds || {};
                       browser.trackIds[track.prototype.id] = browser.trackIds[track.prototype.id] || 1;
-
-                      browser.addTrack(track.extend({ id: track.prototype.id + (browser.tracksById[track.prototype.id] ? browser.trackIds[track.prototype.id]++ : '') }));
+                      const trk = new track(browser);
+                      browser.addTrack($.extend(trk, {
+                        id: track.prototype.id + (browser.tracksById[track.prototype.id] ? browser.trackIds[track.prototype.id]++ : '')
+                      }));
+                      trk.reset();
+                      
                     })
                   ).append('<span>' + track.Name + '</span>').appendTo(availableTracks).data('track', track);
                 })(tracksLibrary[i][1]);
@@ -311,7 +315,7 @@ function create() {
     },
 
     'afterAddTracks afterRemoveTracks': function () {
-      var currentTracks = this.superContainer.find('.gv-tracks-menu .gv-current-tracks');
+      const currentTracks = this.superContainer.find('.gv-tracks-menu .gv-current-tracks');
 
       if (currentTracks.length) {
         currentTracks.data('reload').call(currentTracks);

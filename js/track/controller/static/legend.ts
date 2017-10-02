@@ -42,17 +42,6 @@ export default class LegendTrack extends StaticTrack {
 
         this.sortTracks();
       },
-      afterRemoveTracks: function (tracks) {
-        for (var i in tracks) {
-          if (tracks[i].legendTrack && tracks[i].legendTrack.tracks.length === 0) {
-            tracks[i].legendTrack.remove();
-          }
-        }
-
-        for (var i in this.legends) {
-          this.legends[i].controller.makeImage({});
-        }
-      },
       afterUpdateTrackOrder: function (e, ui) {
         var track       = ui.item.data('track');
         var legendTrack = this.legends[track.id] || track.legendTrack;
