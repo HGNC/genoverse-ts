@@ -3,14 +3,12 @@ import LegendTrack from './../static/legend';
 import GeneTrack from './../gene';
 import TrackView from './../../view';
 import TrackModel from './../../model';
-import EnsemblGeneView from './../../view/gene/ensembl';
-import EnsemblGeneModel from './../../model/gene/ensembl';
-import EnsemblTranscriptView from './../../view/transcript/ensembl';
-import EnsemblTranscriptModel from './../../model/transcript/ensembl';
+import HgncNcbiGeneView from './../../view/gene/hgnc-ncbi';
+import HgncNcbiGeneModel from './../../model/gene/hgnc-ncbi';
 import { Bump } from './../../../interfaces/gene';
 import * as $ from 'jquery';
 
-export default class EnsemblGeneTrack extends GeneTrack {
+export default class HgncNcbiGeneTrack extends GeneTrack {
 
   legendTrack: LegendTrack;
   legendType: string;
@@ -21,11 +19,11 @@ export default class EnsemblGeneTrack extends GeneTrack {
     [name: string]: TrackView
   };
 
-  public static Name: string = 'Ensembl Genes';
+  public static Name: string = 'HGNC NCBI Genes';
 
   constructor(genoverse: Genoverse) {
     super(genoverse, {
-      name: EnsemblGeneTrack.Name,
+      name: HgncNcbiGeneTrack.Name,
       height: 200,
       legend: true,
       labels: true,
@@ -35,53 +33,32 @@ export default class EnsemblGeneTrack extends GeneTrack {
         { // This one applies when > 2M base-pairs per screen
           minLength: 2000000,
           model: {
-            class: EnsemblGeneModel
+            class: HgncNcbiGeneModel
           },
           view: {
-            class: EnsemblGeneView,
+            class: HgncNcbiGeneView,
             properties: {label: false}
           }
         },
         { // more than 100K but less then 2M
-          minLength: 100000,
-          model: {
-            class: EnsemblGeneModel
-          },
-          view: {
-            class: EnsemblGeneView,
-            properties: {label: true}
-          }
-        },
-        { // > 1 base-pair, but less then 100K
           minLength: 1,
           model: {
-            class: EnsemblTranscriptModel
+            class: HgncNcbiGeneModel
           },
           view: {
-            class: EnsemblTranscriptView,
-            properties: {
-              label: true,
-              featureHeight: 10,
-              labels: 'default',
-              repeatLabels:  true,
-              bump: Bump.True,
-              intronStyle: 'curve',
-              intronLineWidth: 0.5,
-              utrHeight: 7
-            }
+            class: HgncNcbiGeneView,
+            properties: {label: true}
           }
         }
       ]
     });
-    this.legendType = 'EnsemblLegend';
+
     this.modelStore = {
-      'EnsemblTranscriptModel': undefined,
-      'EnsemblGeneModel': undefined
+      'HgncNcbiGeneModel': undefined
     };
 
     this.viewStore = {
-      'EnsemblTranscriptView': undefined,
-      'EnsemblGeneView': undefined
+      'HgncNcbiGeneView': undefined
     };
   }
 
@@ -132,9 +109,10 @@ export default class EnsemblGeneTrack extends GeneTrack {
       return;
     }
 
+    this.legendType = 'HGNCNcbi';
     const config = {
-      id: this.legendType,
-      name: 'Ensembl Gene Legend',
+      id: this.legendType + 'Legend',
+      name: 'HGNC NCBI Gene Legend',
       type: this.legendType,
       width: this.width,
       height: 100,
@@ -164,18 +142,23 @@ export default class EnsemblGeneTrack extends GeneTrack {
   }
 
   populateMenu(feature: any) {
-    const url  = 'http://www.ensembl.org/Homo_sapiens/' + (feature.feature_type === 'transcript' ? 'Transcript' : 'Gene') + '/Summary?' + (feature.feature_type === 'transcript' ? 't' : 'g') + '=' + feature.id;
-    const menu: {[key: string]: any} = {
-      title    : '<a target="_blank" href="' + url + '">' + (feature.external_name ? feature.external_name + ' (' + feature.id + ')' : feature.id) + '</a>',
+    var url  = 'http://www.ncbi.nlm.nih.gov/gene/' + feature.id;
+    var sourceName = 'NCBI gene: ';
+    
+    var menu = {
+      title    : '<a target="_blank" href="' + url + '">' + sourceName + feature.id + '</a>',
       Location : feature.chr + ':' + feature.start + '-' + feature.end,
-      Source   : feature.source,
-      Biotype  : feature.biotype
+      Source   : feature.source
     };
-
-    if (feature.feature_type === 'transcript') {
-      menu.Gene = '<a target="_blank" href="http://www.ensembl.org/Homo_sapiens/Gene/Summary?g=' + feature.Parent + '">' + feature.Parent + '</a>';
+    if(feature.symbol){
+      sourceName = feature.symbol+': ';
+      menu['title'] = '<a target="_blank" href="' + url + '">' + sourceName + feature.id + '</a>';
+      menu['Symbol'] = feature.symbol;
     }
-
+    if(feature.biotype){
+      menu['Biotype'] = feature.biotype;
+    }
+    menu['Rerun as'] = '<a href="/update/mapping.html#/GRCh38/'+ feature.id +'">' + feature.id + '</a>';
     return menu;
   }
 

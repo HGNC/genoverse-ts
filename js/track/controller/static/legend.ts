@@ -136,7 +136,7 @@ export default class LegendTrack extends StaticTrack {
   }
   
   createModel() {
-    return new LegendModel(this.browser, {width: this.width});
+    return new LegendModel(this.browser, {width: this.width, type: this.type});
   }
   
   createView(properties?: Object) {
