@@ -28,10 +28,6 @@ function create() {
         this.viewPoint.fadeIn();
       },
 
-      //afterAddTracks: function () {
-      //  this.track = this.tracks[0];
-      //},
-
       afterAddDomElements: function () {
         const karyotype = this;
         const parent    = this.parent;

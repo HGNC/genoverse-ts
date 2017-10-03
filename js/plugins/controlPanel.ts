@@ -1,7 +1,6 @@
 import Genoverse from  '../genoverse';
 import * as $ from 'jquery';
 import 'jquery-ui';
-//import './../lib/jquery-hashchange';
 import './../lib/jquery-mousehold';
 
 function create() {
