@@ -2,16 +2,9 @@
   "compilerOptions": {
     "module": "commonjs",
     "noImplicitAny": false,
-    "moduleResolution": "node",
     "declaration": true,
     "outDir": "./dist",
-    "baseUrl": ".",
     "target": "es5",
-    "lib": ["es2015", "es2015.iterable", "dom"],
-    "paths": {
-      "*": [
-        "node_modules/*"
-      ]
-    }
+    "lib": ["es2015", "es2015.iterable", "dom"]
   }
 }
