@@ -78,8 +78,8 @@ gulp.task("ts", function () {
       "target": "es5",
       "lib" : ["es2015", "es2015.iterable", "dom"],
       "typeRoots" : [
-        "node_modules/@types",
-        "js/lib/@types"
+        "./node_modules/@types",
+        "./js/lib/@types"
       ]
     })
     .bundle()
