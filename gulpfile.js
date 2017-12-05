@@ -23,7 +23,7 @@ var paths = {
 
 
 gulp.task('clean', function () {
-  return gulp.src('tsDist', {
+  return gulp.src('dist', {
       read: false
     })
     .pipe(clean());
@@ -33,14 +33,14 @@ gulp.task('copy-fonts', function () {
   return gulp.src([
       './fonts/**/*'
     ])
-    .pipe(gulp.dest('./tsDist/fonts'));
+    .pipe(gulp.dest('./dist/fonts'));
 });
 
 gulp.task('copy-images', function () {
   return gulp.src([
       './i/**/*'
     ])
-    .pipe(gulp.dest('./tsDist/i'));
+    .pipe(gulp.dest('./dist/i'));
 });
 
 gulp.task('build-css', function () {
@@ -57,12 +57,12 @@ gulp.task('build-css', function () {
       gulp.src('./css/tooltips.css')
     )
     .pipe(concat('genoverse.css'))
-    .pipe(gulp.dest('./tsDist/css'));
+    .pipe(gulp.dest('./dist/css'));
 });
 
 gulp.task("copy-html", function () {
   return gulp.src(paths.pages)
-    .pipe(gulp.dest("tsDist"));
+    .pipe(gulp.dest("dist"));
 });
 
 gulp.task("ts", function () {
@@ -77,8 +77,8 @@ gulp.task("ts", function () {
       ]
     })
     .bundle()
-    .pipe(source('bundle.js'))
-    .pipe(gulp.dest("tsDist"));
+    .pipe(source('index.js'))
+    .pipe(gulp.dest("dist"));
 });
 
 gulp.task("build", gulp.parallel("copy-html", "build-css", "copy-fonts", "copy-images", "ts"));
@@ -86,7 +86,7 @@ gulp.task("build", gulp.parallel("copy-html", "build-css", "copy-fonts", "copy-i
 gulp.task('serve', function () {
   browserSync.init({
     server: {
-      baseDir: "./tsDist"
+      baseDir: "./dist"
     }
   });
 });
