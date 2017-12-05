@@ -1,4 +1,4 @@
-import * as $ from 'jquery';
+import * as $ from '../../node_modules/jquery/dist/jquery.js';
 import Genoverse from '../genoverse';
 
 function create() {

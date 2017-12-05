@@ -3,7 +3,8 @@
 // version 1.0.0a
 // (c) 2008-2010 jason frame [jason@onehackoranother.com]
 // released under the MIT license
-import * as $ from 'jquery';
+
+import * as $ from '../../node_modules/jquery/dist/jquery.js';
 
 (function ($) {
   

@@ -2,7 +2,7 @@ import Genoverse from './../../genoverse';
 import TrackController from './../controller';
 import ChromosomeModel from './../model/chromosome';
 import ChromosomeView from './../view/chromosome';
-import * as $ from 'jquery';
+import * as $ from '../../../node_modules/jquery/dist/jquery.js';
 import './../../lib/jquery-tipsy';
 
 export default class ChromosomeTrack extends TrackController {

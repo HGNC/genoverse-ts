@@ -1,7 +1,7 @@
 import Genoverse from './../../genoverse';
 import TrackView from '../view';
 import {GeneViewProperties} from './../../interfaces/gene';
-import * as $ from 'jquery';
+import * as $ from '../../../node_modules/jquery/dist/jquery.js';
 
 export default abstract class TranscriptView extends TrackView {
   

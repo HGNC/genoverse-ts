@@ -2,8 +2,7 @@ import Genoverse from './../../../genoverse';
 import StaticTrack from "./../static";
 import LegendModel from "./../../model/static/legend";
 import LegendView from "./../../view/static/legend";
-import * as $ from 'jquery';
-
+import * as $ from '../../../../node_modules/jquery/dist/jquery.js';
 
 export default class LegendTrack extends StaticTrack {
   tracks: any[];

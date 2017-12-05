@@ -1,6 +1,7 @@
 import Genoverse from '../genoverse';
 import ChromosomeTrack from './../track/controller/chromosome';
-import * as $ from 'jquery';
+import * as $ from '../../node_modules/jquery/dist/jquery.js';
+
 import './../lib/jquery-tipsy';
 
 function create() {
