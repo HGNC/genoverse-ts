@@ -15,7 +15,7 @@ var babelify = require('babelify'),
   browserSync = require('browser-sync').create();
 
 var ts = require("gulp-typescript");
-var tsProject = ts.createProject("tsconf.json");
+var tsProject = ts.createProject("tsconfig.json");
 var tsify = require("tsify");
 var paths = {
   pages: ['*.html']
