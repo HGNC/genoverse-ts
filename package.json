@@ -1,30 +1,73 @@
 {
-  "name": "genoverse-hgnc",
-  "version": "1.0.2",
-  "description": "HGNC fork of https://github.com/wtsi-web/Genoverse",
-  "main": "dist/js/genoverse-hgnc.min.js",
-  "scripts": {
-    "build": "gulp build"
+  "_from": "git+https://github.com/HGNC/genoverse-hgnc.git#hgnc",
+  "_id": "genoverse-hgnc@1.0.2",
+  "_inBundle": false,
+  "_integrity": "sha1-0Ss4+bzwalKsiJ0PixrG5M62Y3A=",
+  "_location": "/genoverse-hgnc",
+  "_phantomChildren": {
+    "browserify": "14.5.0",
+    "gulp": "3.9.1",
+    "gulp-clean": "0.3.2",
+    "gulp-typescript": "3.2.3",
+    "gulp-util": "3.0.8",
+    "tsify": "3.0.4",
+    "vinyl-source-stream": "1.1.0"
   },
-  "repository": {
+  "_requested": {
     "type": "git",
-    "url": "git+https://github.com/HGNC/genoverse-hgnc.git"
+    "raw": "genoverse-hgnc@git+https://github.com/HGNC/genoverse-hgnc.git#hgnc",
+    "name": "genoverse-hgnc",
+    "escapedName": "genoverse-hgnc",
+    "rawSpec": "git+https://github.com/HGNC/genoverse-hgnc.git#hgnc",
+    "saveSpec": "git+https://github.com/HGNC/genoverse-hgnc.git#hgnc",
+    "fetchSpec": "https://github.com/HGNC/genoverse-hgnc.git",
+    "gitCommittish": "hgnc"
   },
-  "keywords": [
-    "bioinformatics",
-    "genome-browser"
+  "_requiredBy": [
+    "/"
   ],
-  "author": "Kristian Gray",
-  "contributors": [
-    "Simon Brent",
-    "Evgeny Bragin"
-  ],
+  "_resolved": "git+https://github.com/HGNC/genoverse-hgnc.git#5e28789b0e2c992646c9399d63db20d433dab080",
+  "_spec": "genoverse-hgnc@git+https://github.com/HGNC/genoverse-hgnc.git#hgnc",
+  "_where": "/var/www/devel",
+  "author": {
+    "name": "Kristian Gray"
+  },
+  "browser": {
+    "jquery": "./node_modules/jquery/dist/jquery.js",
+    "jquery-ui": "./node_modules/jquery-ui-dist/jquery-ui.js"
+  },
+  "browserify": {
+    "transform": [
+      "browserify-shim"
+    ]
+  },
+  "browserify-shim": {
+    "jquery": "jQuery",
+    "jquery-ui": {
+      "depends": [
+        "jquery:jQuery"
+      ]
+    }
+  },
   "bugs": {
     "url": "https://github.com/HGNC/genoverse-hgnc/issues"
   },
-  "license": "Apache-2.0",
-  "homepage": "https://github.com/HGNC/genoverse-hgnc#readme",
-  "devDependencies": {
+  "bundleDependencies": false,
+  "contributors": [
+    {
+      "name": "Simon Brent"
+    },
+    {
+      "name": "Evgeny Bragin"
+    }
+  ],
+  "dependencies": {
+    "@types/jquery": "^3.2.9",
+    "@types/jqueryui": "^1.11.35",
+    "bam": "git+https://github.com/KrisGray/bam.git",
+    "jquery": "^3.2.1",
+    "jquery-ui-dist": "^1.12.1",
+    "rtree": "git+https://github.com/HGNC/RTree.git#release",
     "babelify": "^7.3.0",
     "browser-sync": "^2.18.12",
     "browserify": "^14.4.0",
@@ -38,39 +81,36 @@
     "gulp-typescript": "^3.2.1",
     "gulp-uglify": "^3.0.0",
     "gulp-util": "^3.0.8",
-    "minifyify": "^7.3.5",
     "run-sequence": "^2.0.0",
     "streamqueue": "^1.1.1",
     "tsify": "^3.0.1",
     "tslint": "^5.7.0",
     "typescript": "^2.5.3",
     "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0",
+    "vinyl-source-stream": "^1.1.0"
+  },
+  "deprecated": false,
+  "description": "HGNC fork of https://github.com/wtsi-web/Genoverse",
+  "devDependencies": {
+    "minifyify": "^7.3.5",
     "watchify": "^3.9.0"
   },
-  "browser": {
-    "jquery": "./node_modules/jquery/dist/jquery.js",
-    "jquery-ui": "./node_modules/jquery-ui-dist/jquery-ui.js"
+  "homepage": "https://github.com/HGNC/genoverse-hgnc#readme",
+  "keywords": [
+    "bioinformatics",
+    "genome-browser"
+  ],
+  "license": "Apache-2.0",
+  "main": "dist/js/genoverse-hgnc.min.js",
+  "name": "genoverse-hgnc",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HGNC/genoverse-hgnc.git"
   },
-  "browserify-shim": {
-    "jquery": "jQuery",
-    "jquery-ui": {
-      "depends": [
-        "jquery:jQuery"
-      ]
-    }
+  "scripts": {
+    "build": "gulp build",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "gulp --gulpfile ./gulpfile.js"
   },
-  "browserify": {
-    "transform": [
-      "browserify-shim"
-    ]
-  },
-  "dependencies": {
-    "@types/jquery": "^3.2.9",
-    "@types/jqueryui": "^1.11.35",
-    "bam": "git+https://github.com/KrisGray/bam.git",
-    "jquery": "^3.2.1",
-    "jquery-ui-dist": "^1.12.1",
-    "rtree": "git+https://github.com/HGNC/RTree.git#release"
-  }
+  "version": "1.0.2"
 }
