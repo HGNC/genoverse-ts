@@ -41,14 +41,7 @@
       "browserify-shim"
     ]
   },
-  "browserify-shim": {
-    "jquery": "jQuery",
-    "jquery-ui": {
-      "depends": [
-        "jquery:jQuery"
-      ]
-    }
-  },
+  "browserify-shim": "./config/shim.js",
   "bugs": {
     "url": "https://github.com/HGNC/genoverse-hgnc/issues"
   },
