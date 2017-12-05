@@ -73,15 +73,7 @@ gulp.task("ts", function () {
     cache: {},
     packageCache: {}
   })
-    .plugin(tsify, {
-      noImplicitAny: false,
-      "target": "es5",
-      "lib" : ["es2015", "es2015.iterable", "dom"],
-      "typeRoots" : [
-        "./node_modules/@types",
-        "./js/lib/@types"
-      ]
-    })
+    .plugin(tsify)
     .bundle()
     .pipe(source('index.js'))
     .pipe(gulp.dest("dist"));
