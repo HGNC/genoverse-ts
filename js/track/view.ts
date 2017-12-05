@@ -2,7 +2,7 @@ import * as $ from 'jquery';
 import Genoverse from '../genoverse';
 import RTree from 'rtree';
 
-enum Bump {False, True, Label}
+export enum Bump {False, True, Label}
 
 export default abstract class TrackView {
   width: number;
