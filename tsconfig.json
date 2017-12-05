@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
     "noImplicitAny": false,
-    "declaration": true,
-    "outDir": "./dist",
-    "target": "es5",
-    "lib": ["es2015", "es2015.iterable", "dom"]
+    //"declaration": true,
+    //"outDir": "./dist",
+    "target": "es5"
+    //"lib": ["es2015", "es2015.iterable", "dom"]
   }
 }

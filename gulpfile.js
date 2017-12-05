@@ -66,7 +66,13 @@ gulp.task("copy-html", function () {
 });
 
 gulp.task("ts", function () {
-  return browserify('js/global.ts')
+  return browserify('js/global.ts',{
+    basedir: '.',
+    debug: true,
+    entries: ['js/global.ts'],
+    cache: {},
+    packageCache: {}
+  })
     .plugin(tsify)
     .bundle()
     .pipe(source('index.js'))
