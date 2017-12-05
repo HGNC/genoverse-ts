@@ -8,7 +8,8 @@ import EnsemblGeneModel from './../../model/gene/ensembl';
 import EnsemblTranscriptView from './../../view/transcript/ensembl';
 import EnsemblTranscriptModel from './../../model/transcript/ensembl';
 import { Bump } from './../../../interfaces/gene';
-import * as $ from 'jquery';
+import * as $ from '../../../../node_modules/jquery/dist/jquery.js';
+
 
 export default class EnsemblGeneTrack extends GeneTrack {
 

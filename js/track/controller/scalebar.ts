@@ -3,7 +3,7 @@ import TrackController from './../controller';
 import ScalebarView from './../view/scalebar';
 import ScalebarModel from './../model/scalebar';
 import RTree from 'rtree';
-import * as $ from 'jquery';
+import * as $ from '../../../node_modules/jquery/dist/jquery.js';
 
 export default class ScalebarTrack extends TrackController {
   forwardTrack: any;

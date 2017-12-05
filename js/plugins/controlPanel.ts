@@ -1,6 +1,6 @@
 import Genoverse from  '../genoverse';
-import * as $ from 'jquery';
-import 'jquery-ui';
+import * as $ from '../../node_modules/jquery/dist/jquery.js';
+import '../../node_modules/jquery-ui-dist/jquery-ui.js';
 import './../lib/jquery-mousehold';
 
 function create() {

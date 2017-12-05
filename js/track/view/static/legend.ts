@@ -1,6 +1,6 @@
 import Genoverse from './../../../genoverse';
 import StaticView from '../static';
-import * as $ from 'jquery';
+import * as $ from '../../../../node_modules/jquery/dist/jquery.js';
 
 export default class LegendView extends StaticView {
   decorateFeature(feature: any, featureContext: any, scale: any) {

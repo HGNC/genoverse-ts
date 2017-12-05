@@ -17,8 +17,8 @@
  * @cat Plugin
  */
 
- import * as $ from 'jquery';
-
+ import * as $ from '../../node_modules/jquery/dist/jquery.js';
+ 
  (function ($) {
 
   $.fn.mousehold = function (timeout, f) {
