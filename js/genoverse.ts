@@ -1,4 +1,4 @@
-import * as $ from "jquery";
+import * as $ from 'jquery';
 import 'jquery-ui';
 import RTree from 'rtree';
 import karyotype from './plugins/karyotype';
