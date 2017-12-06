@@ -3,7 +3,7 @@ import TrackController from './../controller';
 import TrackModel from './../model';
 import TrackView from './../view';
 import {GeneTrackProperties, Model, View} from './../../interfaces/gene';
-import * as $ from '../../../node_modules/jquery/dist/jquery.js';
+import * as $ from 'jquery';
 
 
 export default abstract class GeneTrack extends TrackController {

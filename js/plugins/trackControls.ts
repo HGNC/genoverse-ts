@@ -1,4 +1,4 @@
-import * as $ from '../../node_modules/jquery/dist/jquery.js';
+import * as $ from 'jquery';
 
 function create () {
   var defaultControls = [

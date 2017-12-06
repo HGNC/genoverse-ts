@@ -1,6 +1,6 @@
 import Genoverse from './../../genoverse';
 import TrackController from './../controller';
-import * as $ from '../../../node_modules/jquery/dist/jquery.js';
+import * as $ from 'jquery';
 
 
 

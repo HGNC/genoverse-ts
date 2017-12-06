@@ -1,4 +1,4 @@
-import * as $ from '../../node_modules/jquery/dist/jquery.js';
+import * as $ from 'jquery';
 import Genoverse from '../genoverse';
 import RTree from 'rtree';
 
