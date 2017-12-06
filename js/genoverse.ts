@@ -1,5 +1,3 @@
-///<reference path="../node_modules/@types/jqueryui/index.d.ts"/>
-
 import * as $ from 'jquery';
 import 'jquery-ui';
 import RTree from 'rtree';
