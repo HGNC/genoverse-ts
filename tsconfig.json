@@ -8,10 +8,6 @@
     "baseUrl": "./js",
     "target": "es5",
     "lib": ["es2015", "es2015.iterable", "dom"],
-    "typeRoots": [
-      "@types",
-      "./@types"
-    ],
     "paths": {
       "jquery-ui": [
         "jquery-ui-dist/jquery-ui"
