@@ -6,7 +6,7 @@ import TrackModel from './../../model';
 import HgncVegaGeneView from './../../view/gene/hgnc-vega';
 import HgncVegaGeneModel from './../../model/gene/hgnc-vega';
 import { Bump } from './../../../interfaces/gene';
-import * as $ from '../../../../node_modules/jquery/dist/jquery.js';
+import * as $ from 'jquery';
 
 export default class HgncVegaGeneTrack extends GeneTrack {
 

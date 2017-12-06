@@ -1,6 +1,6 @@
 import Genoverse from './../../genoverse';
 import TrackView from '../view';
-import * as $ from '../../../node_modules/jquery/dist/jquery.js';
+import * as $ from 'jquery';
 
 export default abstract class StaticView extends TrackView {
 

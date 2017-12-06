@@ -1,9 +1,28 @@
 {
   "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
     "noImplicitAny": false,
-    //"declaration": true,
-    //"outDir": "./dist",
-    "target": "es5"
-    //"lib": ["es2015", "es2015.iterable", "dom"]
-  }
+    "removeComments": true,
+    "outDir": "./dist",
+    "baseUrl": "./js",
+    "target": "es5",
+    "lib": ["es2015", "es2015.iterable", "dom"],
+    "typeRoots": [
+      "@types",
+      "./@types"
+    ],
+    "paths": {
+      "jquery-ui": [
+        "jquery-ui-dist/jquery-ui"
+      ]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts"
+  ],
+  "files": [
+    "js/global.ts"
+  ]
 }
