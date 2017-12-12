@@ -1,20 +1,24 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "moduleResolution": "node",
     "noImplicitAny": false,
+    "moduleResolution": "node",
+    "declaration": true,
     "removeComments": true,
     "outDir": "./dist",
-    "baseUrl": "./js",
+    "baseUrl": ".",
     "target": "es5",
     "lib": ["es2015", "es2015.iterable", "dom"],
     "paths": {
       "jquery-ui": [
         "jquery-ui-dist/jquery-ui"
+      ],
+      "*": [
+        "node_modules/*"
       ]
     }
   },
   "files": [
-    "js/index.ts"
+    "src/index.ts"
   ]
 }

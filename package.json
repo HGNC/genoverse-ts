@@ -101,9 +101,9 @@
     "url": "git+https://github.com/HGNC/genoverse-hgnc.git"
   },
   "scripts": {
-    "build": "gulp build",
+    //"build": "gulp build",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "tsc"
+    "postinstall": "tsc --p ./tsconfig,json"
   },
   "version": "1.0.2"
 }
