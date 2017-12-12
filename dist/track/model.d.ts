@@ -1,0 +1,40 @@
+/// <reference types="jquery" />
+import Genoverse from '../genoverse';
+export default abstract class TrackModel {
+    browser: Genoverse;
+    _url: any;
+    dataBufferStart: any;
+    featureFilters: any[];
+    width: number;
+    dataLoading: any[];
+    featuresByChr: any;
+    dataRangesByChr: any;
+    featuresById: any;
+    dataType: string;
+    allData: boolean;
+    dataBuffer: any;
+    xhrFields: any;
+    url: any;
+    urlParams: any;
+    data: any;
+    dataRequestLimit: number;
+    constructor(genoverse: Genoverse, properties?: any);
+    init(reset?: any): void;
+    setDefaults(reset?: any): void;
+    setChrProps(): void;
+    features(chr: string): any;
+    dataRanges(chr: string): any;
+    parseURL(...args: any[]): any;
+    setLabelBuffer(buffer: any): void;
+    getData(...args: any[]): JQuery.Deferred<any, any, any>;
+    receiveData(data: any, chr: string, start: number, end: number): void;
+    parseData(data: any, chr: string, start: number, end: number): void;
+    setDataRange(chr: string, start: number, end: number): void;
+    checkDataRange(chr: string, start: number, end: number): boolean;
+    insertFeature(feature: any): void;
+    findFeatures(...args: any[]): any;
+    sortFeatures(features: any): any;
+    abort(): void;
+    hashCode(string: string): string | number;
+    reset(): void;
+}
