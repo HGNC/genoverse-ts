@@ -94,7 +94,7 @@
     "genome-browser"
   ],
   "license": "Apache-2.0",
-  "main": "dist/js/genoverse-hgnc.min.js",
+  "main": "dist/index.js",
   "name": "genoverse-hgnc",
   "repository": {
     "type": "git",
