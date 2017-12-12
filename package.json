@@ -57,10 +57,10 @@
   "dependencies": {
     "@types/jquery": "^3.2.9",
     "@types/jqueryui": "^1.11.35",
-    "bam": "git+https://github.com/KrisGray/bam.git",
+    "bam": "git+https://github.com/KrisGray/bam.git#npm",
     "jquery": "^3.2.1",
     "jquery-ui-dist": "^1.12.1",
-    "rtree": "git+https://github.com/HGNC/RTree.git#release",
+    "rtree": "git+https://github.com/HGNC/RTree.git#npm",
     "babelify": "^7.3.0",
     "browser-sync": "^2.18.12",
     "browserify": "^14.4.0",
