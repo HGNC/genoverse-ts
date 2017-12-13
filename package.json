@@ -1,51 +1,7 @@
 {
-  "_from": "git+https://github.com/HGNC/genoverse-hgnc.git#hgnc",
-  "_id": "genoverse-hgnc@1.0.2",
-  "_inBundle": false,
-  "_integrity": "sha1-0Ss4+bzwalKsiJ0PixrG5M62Y3A=",
-  "_location": "/genoverse-hgnc",
-  "_phantomChildren": {
-    "browserify": "14.5.0",
-    "gulp": "3.9.1",
-    "gulp-clean": "0.3.2",
-    "gulp-typescript": "3.2.3",
-    "gulp-util": "3.0.8",
-    "tsify": "3.0.4",
-    "vinyl-source-stream": "1.1.0"
-  },
-  "_requested": {
-    "type": "git",
-    "raw": "genoverse-hgnc@git+https://github.com/HGNC/genoverse-hgnc.git#hgnc",
-    "name": "genoverse-hgnc",
-    "escapedName": "genoverse-hgnc",
-    "rawSpec": "git+https://github.com/HGNC/genoverse-hgnc.git#hgnc",
-    "saveSpec": "git+https://github.com/HGNC/genoverse-hgnc.git#hgnc",
-    "fetchSpec": "https://github.com/HGNC/genoverse-hgnc.git",
-    "gitCommittish": "hgnc"
-  },
-  "_requiredBy": [
-    "/"
-  ],
-  "_resolved": "git+https://github.com/HGNC/genoverse-hgnc.git#5e28789b0e2c992646c9399d63db20d433dab080",
-  "_spec": "genoverse-hgnc@git+https://github.com/HGNC/genoverse-hgnc.git#hgnc",
-  "_where": "/var/www/devel",
   "author": {
     "name": "Kristian Gray"
   },
-  "browser": {
-    "jquery": "./node_modules/jquery/dist/jquery.js",
-    "jquery-ui": "./node_modules/jquery-ui-dist/jquery-ui.js"
-  },
-  "browserify": {
-    "transform": [
-      "browserify-shim"
-    ]
-  },
-  "browserify-shim": "./config/shim.js",
-  "bugs": {
-    "url": "https://github.com/HGNC/genoverse-hgnc/issues"
-  },
-  "bundleDependencies": false,
   "contributors": [
     {
       "name": "Simon Brent"
@@ -88,11 +44,6 @@
     "minifyify": "^7.3.5",
     "watchify": "^3.9.0"
   },
-  "homepage": "https://github.com/HGNC/genoverse-hgnc#readme",
-  "keywords": [
-    "bioinformatics",
-    "genome-browser"
-  ],
   "license": "Apache-2.0",
   "main": "dist/index.js",
   "name": "genoverse-hgnc",
@@ -100,6 +51,5 @@
     "type": "git",
     "url": "git+https://github.com/HGNC/genoverse-hgnc.git"
   },
-  "scripts": {},
   "version": "1.0.2"
 }
