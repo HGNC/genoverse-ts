@@ -1,5 +1,5 @@
 import * as $ from 'jquery';
-import 'jquery-ui';
+import 'jquery-ui-dist/jquery-ui';
 import RTree from 'rtree';
 import karyotype from './plugins/karyotype';
 import tooltips from './plugins/tooltips';
