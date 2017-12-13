@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var $ = require("jquery");
-require("jquery-ui");
+require("jquery-ui-dist/jquery-ui");
 require("./../lib/jquery-mousehold");
 function create() {
     this.controls = [

@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var $ = require("jquery");
-require("jquery-ui");
+require("jquery-ui-dist/jquery-ui");
 var karyotype_1 = require("./plugins/karyotype");
 var tooltips_1 = require("./plugins/tooltips");
 var trackControls_1 = require("./plugins/trackControls");
