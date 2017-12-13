@@ -1,4 +1,4 @@
-import 'jquery-ui';
+import 'jquery-ui-dist/jquery-ui';
 import './../lib/jquery-mousehold';
 declare const _default: {
     create: () => void;

@@ -1,4 +1,4 @@
-import 'jquery-ui';
+import 'jquery-ui-dist/jquery-ui';
 import { Chromosomes } from "./interfaces/genome";
 export default class Genoverse {
     type?: string;
