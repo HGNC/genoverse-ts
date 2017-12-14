@@ -16,7 +16,13 @@
     "bam": "git+https://github.com/KrisGray/bam.git#npm",
     "jquery": "^3.2.1",
     "jquery-ui-dist": "^1.12.1",
-    "rtree": "git+https://github.com/HGNC/RTree.git#npm",
+    "rtree": "git+https://github.com/HGNC/RTree.git#npm"
+  },
+  "deprecated": false,
+  "description": "HGNC fork of https://github.com/wtsi-web/Genoverse",
+  "devDependencies": {
+    "minifyify": "^7.3.5",
+    "watchify": "^3.9.0",
     "babelify": "^7.3.0",
     "browser-sync": "^2.18.12",
     "browserify": "^14.4.0",
@@ -38,12 +44,6 @@
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"
   },
-  "deprecated": false,
-  "description": "HGNC fork of https://github.com/wtsi-web/Genoverse",
-  "devDependencies": {
-    "minifyify": "^7.3.5",
-    "watchify": "^3.9.0"
-  },
   "license": "Apache-2.0",
   "main": "dist/index.js",
   "name": "genoverse-hgnc",
@@ -51,5 +51,19 @@
     "type": "git",
     "url": "git+https://github.com/HGNC/genoverse-hgnc.git"
   },
-  "version": "1.0.2"
+  "version": "1.0.2",
+  "browserify": {
+    "transform": [
+      "browserify-shim"
+    ]
+  },
+  "browserify-shim": "./config/shim.js",
+  "browser": {
+    "jquery": "./node_modules/jquery/dist/jquery.js"
+  },
+  "scripts": {
+    "build:dev": "gulp",
+    "build:dist": "tsc",
+    "serve:dev": "gulp serve"
+  }
 }

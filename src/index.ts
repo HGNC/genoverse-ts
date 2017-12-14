@@ -5,7 +5,7 @@ import HgncEnsemblTrack from './track/controller/gene/hgnc-ensembl';
 import HgncNcbiGeneTrack from './track/controller/gene/hgnc-ncbi';
 import HgncVegaGeneTrack from './track/controller/gene/hgnc-vega';
 
-(<any>window).Genoverse = Genoverse;
+
 
 document.addEventListener('DOMContentLoaded', function() {
   var genoverseConfig = {
