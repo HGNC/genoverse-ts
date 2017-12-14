@@ -23,7 +23,7 @@ var paths = {
 
 
 gulp.task('clean', function () {
-  return gulp.src('dist', {
+  return gulp.src('dev', {
       read: false
     })
     .pipe(clean());
@@ -33,14 +33,14 @@ gulp.task('copy-fonts', function () {
   return gulp.src([
       './fonts/**/*'
     ])
-    .pipe(gulp.dest('./dist/fonts'));
+    .pipe(gulp.dest('./dev/fonts'));
 });
 
 gulp.task('copy-images', function () {
   return gulp.src([
       './i/**/*'
     ])
-    .pipe(gulp.dest('./dist/i'));
+    .pipe(gulp.dest('./dev/i'));
 });
 
 gulp.task('build-css', function () {
@@ -57,26 +57,26 @@ gulp.task('build-css', function () {
       gulp.src('./css/tooltips.css')
     )
     .pipe(concat('genoverse.css'))
-    .pipe(gulp.dest('./dist/css'));
+    .pipe(gulp.dest('./dev/css'));
 });
 
 gulp.task("copy-html", function () {
   return gulp.src(paths.pages)
-    .pipe(gulp.dest("dist"));
+    .pipe(gulp.dest("dev"));
 });
 
 gulp.task("ts", function () {
-  return browserify('js/global.ts',{
+  return browserify('src/index.ts',{
     basedir: '.',
     debug: true,
-    entries: ['js/global.ts'],
+    entries: ['src/index.ts'],
     cache: {},
     packageCache: {}
   })
     .plugin(tsify)
     .bundle()
     .pipe(source('index.js'))
-    .pipe(gulp.dest("dist"));
+    .pipe(gulp.dest("dev"));
 });
 
 gulp.task("build", gulp.parallel("copy-html", "build-css", "copy-fonts", "copy-images", "ts"));
@@ -84,7 +84,7 @@ gulp.task("build", gulp.parallel("copy-html", "build-css", "copy-fonts", "copy-i
 gulp.task('serve', function () {
   browserSync.init({
     server: {
-      baseDir: "./dist"
+      baseDir: "./dev"
     }
   });
 });

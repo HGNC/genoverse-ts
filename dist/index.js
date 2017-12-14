@@ -6,7 +6,6 @@ var ensembl_1 = require("./track/controller/gene/ensembl");
 var hgnc_ensembl_1 = require("./track/controller/gene/hgnc-ensembl");
 var hgnc_ncbi_1 = require("./track/controller/gene/hgnc-ncbi");
 var hgnc_vega_1 = require("./track/controller/gene/hgnc-vega");
-window.Genoverse = genoverse_1.default;
 document.addEventListener('DOMContentLoaded', function () {
     var genoverseConfig = {
         container: '#genoverse',
